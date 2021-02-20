@@ -1,5 +1,4 @@
-import React, { useEffect } from 'react';
-import axios from 'axios';
+import React, { useState, useEffect } from 'react';
 
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
@@ -8,12 +7,14 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 
 import { BASE_URL } from 'config/routes';
+import {callUrl, get } from 'utils/sdk';
 
 import styles from './styles.module.css';
 
 const OrdersList = () => {
+  const [orders, setOrders] = useState([]);
   useEffect(() => {
-    axios.get(`${BASE_URL}/api/offers`);
+    callUrl(get, `${BASE_URL}/orders`).then(setOrders);
   }, []);
 
   return (
@@ -21,9 +22,10 @@ const OrdersList = () => {
       <Typography variant="h3">Orders list</Typography>
       <div>
         <List component="nav">
-          <ListItem button selected={false} onClick={() => {}}>
-            <ListItemText primary="Offer 1" />
-          </ListItem>
+          {orders.map((order, index) => (
+          <ListItem key={index} button selected={false} onClick={() => {}}>
+            <ListItemText primary={order.order_number} />
+          </ListItem>))}
         </List>
       </div>
     </Paper>
