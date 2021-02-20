@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 
 import Paper from '@material-ui/core/Paper';
 
-import { BASE_URL } from 'config/routes';
+import { BASE_URL } from 'config/urls';
 import { callUrl, get } from 'utils/sdk';
 import OrderForm from './OrderForm';
 

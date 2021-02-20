@@ -6,7 +6,7 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 
-import { BASE_URL, ORDER_DETAIL_URL } from 'config/routes';
+import { BASE_URL, ORDER_DETAIL_URL } from 'config/urls';
 import { callUrl, get, reverse } from 'utils/sdk';
 
 import styles from './styles.module.css';

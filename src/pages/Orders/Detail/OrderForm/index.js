@@ -5,13 +5,13 @@ import * as yup from 'yup';
 
 import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
-import MomentUtils from '@date-io/moment';
 import {
   MuiPickersUtilsProvider,
   KeyboardDatePicker
 } from '@material-ui/pickers';
 import Button from '@material-ui/core/Button';
 import LinearProgress from '@material-ui/core/LinearProgress';
+import MomentUtils from '@date-io/moment';
 
 import styles from './styles.module.css';
 
