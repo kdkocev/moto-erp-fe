@@ -12,8 +12,10 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import AssignmentIcon from '@material-ui/icons/Assignment';
+import GroupWorkIcon from '@material-ui/icons/GroupWork';
+import SettingsApplicationsIcon from '@material-ui/icons/SettingsApplications';
 
-import { ORDERS_LIST_URL } from 'config/urls';
+import { ORDER_LIST_URL, CASTING_LIST_URL, PART_LIST_URL } from 'config/urls';
 
 const useStyles = makeStyles((theme) => ({
   drawerPaper: {
@@ -36,7 +38,19 @@ const menuItems = [
     key: 'orders',
     label: 'Orders',
     Icon: AssignmentIcon,
-    url: ORDERS_LIST_URL
+    url: ORDER_LIST_URL
+  },
+  {
+    key: 'parts',
+    label: 'Parts',
+    Icon: GroupWorkIcon,
+    url: PART_LIST_URL
+  },
+  {
+    key: 'castings',
+    label: 'Castings',
+    Icon: SettingsApplicationsIcon,
+    url: CASTING_LIST_URL
   }
 ];
 

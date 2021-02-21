@@ -18,6 +18,10 @@ export const post = (url, data, params) => {
   return axios.post(url, data, { ...getConfig(), ...params });
 };
 
+export const patch = (url, data, params) => {
+  return axios.patch(url, data, { ...getConfig(), ...params });
+};
+
 export const reverse = (url, params = {}) => {
   let result = url;
 
@@ -32,6 +36,9 @@ export const callUrl = (method, url, params) => {
   return new Promise((resolve, reject) => {
     method(url, params)
       .then((response) => resolve(response.data))
-      .catch(console.error);
+      .catch((error) => {
+        console.error(error);
+        reject(error);
+      });
   });
 };

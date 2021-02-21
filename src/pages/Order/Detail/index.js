@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 
 import Paper from '@material-ui/core/Paper';
 
 import { BASE_URL } from 'config/urls';
-import { callUrl, get } from 'utils/sdk';
+import { callUrl, get, patch } from 'utils/sdk';
 import OrderForm from './OrderForm';
 
 import styles from './styles.module.css';
@@ -17,9 +17,16 @@ const OrderDetail = ({ match }) => {
     callUrl(get, `${BASE_URL}/order/${id}`).then(setOrder);
   }, [id]);
 
+  const handleSubmit = useCallback(
+    (data) => {
+      callUrl(patch, `${BASE_URL}/order/${id}`, data);
+    },
+    [id]
+  );
+
   return (
     <Paper className={styles.paper}>
-      {order && <OrderForm order={order} />}
+      {order && <OrderForm order={order} onSubmit={handleSubmit} />}
     </Paper>
   );
 };

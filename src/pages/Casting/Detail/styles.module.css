@@ -1,10 +1,6 @@
 .paper {
-  margin: 20px auto;
-  padding: 20px;
   width: 100%;
   max-width: 600px;
-}
-
-.orderItem {
+  margin: 20px auto;
   padding: 20px;
 }

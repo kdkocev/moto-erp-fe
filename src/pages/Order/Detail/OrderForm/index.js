@@ -1,40 +1,78 @@
-import React from 'react';
+import React, { useState, useCallback } from 'react';
 import _ from 'lodash';
+import moment from 'moment';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 
 import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
-import {
-  MuiPickersUtilsProvider,
-  KeyboardDatePicker
-} from '@material-ui/pickers';
+import { DatePicker } from '@material-ui/pickers';
 import Button from '@material-ui/core/Button';
 import LinearProgress from '@material-ui/core/LinearProgress';
-import MomentUtils from '@date-io/moment';
 
 import styles from './styles.module.css';
 
+const DATE_FORMAT = 'DD/MM/YYYY';
 const validationSchema = yup.object({});
 
-const OrderForm = ({ order }) => {
-  const addition = {};
-  if (_.isNull(order.completed_at)) {
-    addition.completed_at = '';
-  }
-  const formik = useFormik({
-    initialValues: { ...order, ...addition },
-    validationSchema: validationSchema,
-    onSubmit: (values) => {
-      alert(JSON.stringify(values, null, 2));
+const emptyOrder = {
+  id: '',
+  order_number: '',
+  part: '',
+  amount: '',
+  date_received: moment(),
+  date_of_expedition: moment(),
+  date_of_delivery: moment(),
+  completed_at: moment(),
+  created_at: moment()
+};
+
+const getInitialValues = (order) => {
+  if (order) {
+    const addition = {};
+    if (_.isNull(order.completed_at)) {
+      // If completed_at is returned as null from the API, we have to make it ''
+      addition.completed_at = '';
     }
+    return { ...order, ...addition };
+  }
+  return emptyOrder;
+};
+
+const OrderForm = ({ order, onSubmit }) => {
+  const [submitting, setSubmitting] = useState(false);
+  const initialValues = getInitialValues(order);
+
+  const handleSubmit = useCallback(
+    async (data) => {
+      if (onSubmit) {
+        // If onSubmit is a promise
+        if (Promise.resolve(onSubmit) === onSubmit) {
+          setSubmitting(true);
+          onSubmit(data).then(() => {
+            setSubmitting(false);
+          });
+        } else {
+          onSubmit(data);
+        }
+      }
+    },
+    [onSubmit]
+  );
+
+  const formik = useFormik({
+    initialValues,
+    validationSchema,
+    onSubmit: handleSubmit
   });
 
   return (
-    <MuiPickersUtilsProvider utils={MomentUtils}>
-      <Typography variant="h3">Order details</Typography>
+    <>
+      <Typography variant="h3" classes={{ root: styles.heading }}>
+        {order ? 'Edit order' : 'Add order'}
+      </Typography>
 
-      <form onSubmit={formik.handleSubmit}>
+      <form className={styles.form} onSubmit={formik.handleSubmit}>
         <TextField
           fullWidth
           id="id"
@@ -78,14 +116,14 @@ const OrderForm = ({ order }) => {
           error={formik.touched.amount && Boolean(formik.errors.amount)}
           helperText={formik.touched.amount && formik.errors.amount}
         />
-        <KeyboardDatePicker
+        <DatePicker
           fullWidth
-          format="YYYY-MM-DD"
+          format={DATE_FORMAT}
           id="date_received"
           name="date_received"
           label="Date received"
           value={formik.values.date_received}
-          onChange={formik.handleChange}
+          onChange={(date) => formik.setFieldValue('date_received', date)}
           error={
             formik.touched.date_received && Boolean(formik.errors.date_received)
           }
@@ -93,14 +131,14 @@ const OrderForm = ({ order }) => {
             formik.touched.date_received && formik.errors.date_received
           }
         />
-        <KeyboardDatePicker
+        <DatePicker
           fullWidth
-          format="YYYY-MM-DD"
+          format={DATE_FORMAT}
           id="date_of_expedition"
           name="date_of_expedition"
           label="Date of expedition"
           value={formik.values.date_of_expedition}
-          onChange={formik.handleChange}
+          onChange={(date) => formik.setFieldValue('date_of_expedition', date)}
           error={
             formik.touched.date_of_expedition &&
             Boolean(formik.errors.date_of_expedition)
@@ -110,14 +148,14 @@ const OrderForm = ({ order }) => {
             formik.errors.date_of_expedition
           }
         />
-        <KeyboardDatePicker
+        <DatePicker
           fullWidth
-          format="YYYY-MM-DD"
+          format={DATE_FORMAT}
           id="date_of_delivery"
           name="date_of_delivery"
           label="Date of delivery"
           value={formik.values.date_of_delivery}
-          onChange={formik.handleChange}
+          onChange={(date) => formik.setFieldValue('date_of_delivery', date)}
           error={
             formik.touched.date_of_delivery &&
             Boolean(formik.errors.date_of_delivery)
@@ -126,39 +164,44 @@ const OrderForm = ({ order }) => {
             formik.touched.date_of_delivery && formik.errors.date_of_delivery
           }
         />
-        <KeyboardDatePicker
+        <DatePicker
           fullWidth
-          format="YYYY-MM-DD"
+          format={DATE_FORMAT}
           id="completed_at"
           name="completed_at"
           label="Completed at"
           value={formik.values.completed_at}
-          onChange={formik.handleChange}
+          onChange={(date) => formik.setFieldValue('completed_at', date)}
           error={
             formik.touched.completed_at && Boolean(formik.errors.completed_at)
           }
           helperText={formik.touched.completed_at && formik.errors.completed_at}
         />
-        <KeyboardDatePicker
+        <DatePicker
           fullWidth
-          format="YYYY-MM-DD"
+          format={DATE_FORMAT}
           id="created_at"
           name="created_at"
           label="Created at"
           value={formik.values.created_at}
-          onChange={formik.handleChange}
+          onChange={(date) => formik.setFieldValue('created_at', date)}
           error={formik.touched.created_at && Boolean(formik.errors.created_at)}
           helperText={formik.touched.created_at && formik.errors.created_at}
         />
 
         <div className={styles.submitButtonContainer}>
-          <LinearProgress color="secondary" />
-          <Button color="primary" variant="contained" fullWidth type="submit">
-            Edit
+          {submitting && <LinearProgress color="primary" />}
+          <Button
+            color="primary"
+            variant="contained"
+            fullWidth
+            type="submit"
+            disabled={submitting}>
+            Submit
           </Button>
         </div>
       </form>
-    </MuiPickersUtilsProvider>
+    </>
   );
 };
 export default OrderForm;
