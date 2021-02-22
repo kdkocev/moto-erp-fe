@@ -140,7 +140,7 @@ const OrdersList = ({ history }) => {
       <Paper className={styles.paper}>
         <div>
           {Object.keys(monthsOrders).map((month) => (
-            <>
+            <React.Fragment key={month}>
               <div className={styles.monthSeparator}>
                 <Typography variant="h5">{month}</Typography>
               </div>
@@ -148,7 +148,7 @@ const OrdersList = ({ history }) => {
                 orders={monthsOrders[month]}
                 handleListItemOnClick={handleListItemOnClick}
               />
-            </>
+            </React.Fragment>
           ))}
 
           <div className={styles.addButton}>

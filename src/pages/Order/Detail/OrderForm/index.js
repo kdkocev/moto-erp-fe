@@ -9,6 +9,10 @@ import TextField from '@material-ui/core/TextField';
 import { DatePicker } from '@material-ui/pickers';
 import Button from '@material-ui/core/Button';
 import LinearProgress from '@material-ui/core/LinearProgress';
+import Select from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
+import FormControl from '@material-ui/core/FormControl';
+import InputLabel from '@material-ui/core/InputLabel';
 
 import styles from './styles.module.css';
 
@@ -39,7 +43,7 @@ const getInitialValues = (order) => {
   return emptyOrder;
 };
 
-const OrderForm = ({ order, onSubmit }) => {
+const OrderForm = ({ order, parts = [], onSubmit }) => {
   const [submitting, setSubmitting] = useState(false);
   const initialValues = getInitialValues(order);
 
@@ -96,16 +100,23 @@ const OrderForm = ({ order, onSubmit }) => {
           }
           helperText={formik.touched.order_number && formik.errors.order_number}
         />
-        <TextField
-          fullWidth
-          id="part"
-          name="part"
-          label="Part"
-          value={formik.values.part}
-          onChange={formik.handleChange}
-          error={formik.touched.part && Boolean(formik.errors.part)}
-          helperText={formik.touched.part && formik.errors.part}
-        />
+        <FormControl fullWidth>
+          <InputLabel>Part</InputLabel>
+          <Select
+            fullWidth
+            id="part"
+            name="part"
+            label="Part"
+            value={formik.values.part}
+            onChange={formik.handleChange}
+            error={formik.touched.part && Boolean(formik.errors.part)}>
+            {parts.map((part) => (
+              <MenuItem key={part.id} value={part.id}>
+                {part.number}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
         <TextField
           fullWidth
           id="amount"

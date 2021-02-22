@@ -6,6 +6,10 @@ import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import LinearProgress from '@material-ui/core/LinearProgress';
+import Select from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
+import FormControl from '@material-ui/core/FormControl';
+import InputLabel from '@material-ui/core/InputLabel';
 
 import styles from './styles.module.css';
 
@@ -26,7 +30,7 @@ const getInitialValues = (part) => {
   return emptyObject;
 };
 
-const PartForm = ({ part, onSubmit }) => {
+const PartForm = ({ part, castings = [], onSubmit }) => {
   const [submitting, setSubmitting] = useState(false);
   const initialValues = getInitialValues(part);
 
@@ -108,16 +112,22 @@ const PartForm = ({ part, onSubmit }) => {
             formik.touched.price_machining && formik.errors.price_machining
           }
         />
-        <TextField
-          fullWidth
-          id="casting"
-          name="casting"
-          label="Casting"
-          value={formik.values.casting}
-          onChange={formik.handleChange}
-          error={formik.touched.casting && Boolean(formik.errors.casting)}
-          helperText={formik.touched.casting && formik.errors.casting}
-        />
+        <FormControl fullWidth>
+          <InputLabel>Casting</InputLabel>
+          <Select
+            id="casting"
+            name="casting"
+            label="Casting"
+            value={formik.values.casting}
+            onChange={formik.handleChange}
+            error={formik.touched.casting && Boolean(formik.errors.casting)}>
+            {castings.map((casting) => (
+              <MenuItem key={casting.id} value={casting.id}>
+                {casting.number}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
 
         <div className={styles.submitButtonContainer}>
           {submitting && <LinearProgress color="primary" />}
