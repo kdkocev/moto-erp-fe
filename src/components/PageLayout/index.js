@@ -19,7 +19,7 @@ import { ORDER_LIST_URL, CASTING_LIST_URL, PART_LIST_URL } from 'config/urls';
 
 const useStyles = makeStyles((theme) => ({
   drawerPaper: {
-    width: 240,
+    width: 200,
     height: 'calc(100% - 64px)',
     top: 64,
     backgroundColor: '#1d3475',
@@ -30,7 +30,7 @@ const useStyles = makeStyles((theme) => ({
   },
   content: {
     paddingTop: 64,
-    paddingLeft: 240
+    paddingLeft: 200
   }
 }));
 const menuItems = [

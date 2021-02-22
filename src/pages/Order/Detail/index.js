@@ -4,6 +4,7 @@ import Paper from '@material-ui/core/Paper';
 
 import { BASE_URL } from 'config/urls';
 import { callUrl, get, patch } from 'utils/sdk';
+import { formatDatesInObjectForApi } from 'utils/dates';
 import OrderForm from './OrderForm';
 
 import styles from './styles.module.css';
@@ -19,7 +20,11 @@ const OrderDetail = ({ match }) => {
 
   const handleSubmit = useCallback(
     (data) => {
-      callUrl(patch, `${BASE_URL}/order/${id}`, data);
+      callUrl(
+        patch,
+        `${BASE_URL}/order/${id}`,
+        formatDatesInObjectForApi(data)
+      );
     },
     [id]
   );

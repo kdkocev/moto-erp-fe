@@ -1,6 +1,23 @@
 .paper {
-  margin: 20px auto;
+  margin: 20px;
   padding: 20px;
-  width: 100%;
-  max-width: 600px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.addButton {
+  margin-top: 40px;
+}
+
+.table {
+  box-shadow: none;
+}
+
+.monthSeparator {
+  padding: 20px;
+  background-color: grey;
 }
