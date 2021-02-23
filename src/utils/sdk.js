@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import _ from 'lodash';
 import axios from 'axios';
 
@@ -30,6 +31,24 @@ export const reverse = (url, params = {}) => {
   });
 
   return result;
+};
+
+export const useFetch = (id, url, initial) => {
+  const [object, setObject] = useState(initial);
+
+  useEffect(() => {
+    let didCancel = false;
+    callUrl(get, url).then((response) => {
+      if (!didCancel) {
+        setObject(response);
+      }
+    });
+    return () => {
+      didCancel = true;
+    };
+  }, [id, url]);
+
+  return object;
 };
 
 export const callUrl = (method, url, params) => {
