@@ -8,17 +8,23 @@ import InformationTable from 'components/InformationTable';
 import { CASTING_DETAIL_URL, CASTING_ADD_NEW_URL } from 'config/urls';
 import { useLink } from 'utils/links';
 import { getIdObject } from 'utils/common';
-import { useCastingList } from 'sdk/casting';
+import { useRefreshKey } from 'utils/sdk';
+import { useCastingList, deleteCasting } from 'sdk/casting';
 
 import { prepareCastingsForTable, hiddenFields } from './utils';
 
 import styles from './styles.module.css';
 
-const CastingTable = ({ castings, onEdit }) => {
+const CastingTable = ({ castings, onEdit, onDelete }) => {
   const items = useMemo(() => prepareCastingsForTable(castings), [castings]);
 
   return (
-    <InformationTable items={items} onEdit={onEdit} hiddenKeys={hiddenFields} />
+    <InformationTable
+      items={items}
+      onEdit={onEdit}
+      onDelete={onDelete}
+      hiddenKeys={hiddenFields}
+    />
   );
 };
 
@@ -29,9 +35,12 @@ const AddNewCastingButton = ({ onClick }) => (
 );
 
 const CastingList = ({ history }) => {
-  const castings = useCastingList();
+  const [refreshKey, refreshCastingList] = useRefreshKey();
+  const castings = useCastingList(refreshKey);
 
-  const handleListItemOnClick = useLink(CASTING_DETAIL_URL, getIdObject);
+  const onItemEdit = useLink(CASTING_DETAIL_URL, getIdObject);
+  const onItemDelete = (object) =>
+    deleteCasting(object.id).then(refreshCastingList);
 
   const handleAddButtonClick = useCallback(() => {
     history.push(CASTING_ADD_NEW_URL);
@@ -49,7 +58,11 @@ const CastingList = ({ history }) => {
       </Paper>
       <Paper className={styles.paper}>
         <div>
-          <CastingTable castings={castings} onEdit={handleListItemOnClick} />
+          <CastingTable
+            castings={castings}
+            onEdit={onItemEdit}
+            onDelete={onItemDelete}
+          />
           <div className={styles.addButton}>
             <AddNewCastingButton onClick={handleAddButtonClick} />
           </div>

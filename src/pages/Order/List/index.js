@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useCallback } from 'react';
 
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
@@ -8,7 +8,8 @@ import InformationTable from 'components/InformationTable';
 import { ORDER_DETAIL_URL, ORDER_ADD_NEW_URL } from 'config/urls';
 import { useLink } from 'utils/links';
 import { getIdObject } from 'utils/common';
-import { useOrderList } from 'sdk/order';
+import { useRefreshKey } from 'utils/sdk';
+import { useOrderList, deleteOrder } from 'sdk/order';
 
 import {
   sortAndGroupOrders,
@@ -18,11 +19,16 @@ import {
 
 import styles from './styles.module.css';
 
-const OrdersTable = ({ orders, onEdit }) => {
+const OrdersTable = ({ orders, onEdit, onDelete }) => {
   const items = useMemo(() => prepareOrdersForTable(orders), [orders]);
 
   return (
-    <InformationTable items={items} onEdit={onEdit} hiddenKeys={hiddenFields} />
+    <InformationTable
+      items={items}
+      onEdit={onEdit}
+      onDelete={onDelete}
+      hiddenKeys={hiddenFields}
+    />
   );
 };
 
@@ -31,8 +37,14 @@ const AddNewOrderButton = ({ onClick }) => (
 );
 
 const OrdersList = () => {
-  const orders = useOrderList();
-  const handleListItemOnClick = useLink(ORDER_DETAIL_URL, getIdObject);
+  const [refreshKey, refreshOrderList] = useRefreshKey();
+  const orders = useOrderList(refreshKey);
+  const onItemEdit = useLink(ORDER_DETAIL_URL, getIdObject);
+  const onItemDelete = useCallback(
+    (object) => deleteOrder(object.id).then(refreshOrderList),
+    [refreshOrderList]
+  );
+
   const handleAddButtonClick = useLink(ORDER_ADD_NEW_URL);
 
   const monthsOrders = useMemo(() => sortAndGroupOrders(orders), [orders]);
@@ -56,7 +68,8 @@ const OrdersList = () => {
               </div>
               <OrdersTable
                 orders={monthsOrders[month]}
-                onEdit={handleListItemOnClick}
+                onEdit={onItemEdit}
+                onDelete={onItemDelete}
               />
             </React.Fragment>
           ))}

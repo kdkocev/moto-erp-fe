@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import _ from 'lodash';
 import axios from 'axios';
 
@@ -23,6 +23,10 @@ export const patch = (url, data, params) => {
   return axios.patch(url, data, { ...getConfig(), ...params });
 };
 
+export const remove = (url, data, params) => {
+  return axios.delete(url, data, { ...getConfig(), ...params });
+};
+
 export const reverse = (url, params = {}) => {
   let result = url;
 
@@ -33,7 +37,9 @@ export const reverse = (url, params = {}) => {
   return result;
 };
 
-export const useFetch = (id, url, initial) => {
+// `key` is used for force refetching
+// Whenever key changes - the request will run again
+export const useFetch = (id, url, initial, key) => {
   const [object, setObject] = useState(initial);
 
   useEffect(() => {
@@ -46,7 +52,7 @@ export const useFetch = (id, url, initial) => {
     return () => {
       didCancel = true;
     };
-  }, [id, url]);
+  }, [id, url, key]);
 
   return object;
 };
@@ -60,4 +66,10 @@ export const callUrl = (method, url, params) => {
         reject(error);
       });
   });
+};
+
+export const useRefreshKey = () => {
+  const [refreshCounter, setRefreshCounter] = useState(0);
+  const refresh = useCallback(() => setRefreshCounter((x) => x + 1), []);
+  return [refreshCounter, refresh];
 };
