@@ -10,21 +10,27 @@ import { useLink } from 'utils/links';
 import { getIdObject } from 'utils/common';
 import { useOrderList } from 'sdk/order';
 
-import { sortAndGroupOrders, prepareOrdersForTable } from './utils';
+import {
+  sortAndGroupOrders,
+  prepareOrdersForTable,
+  hiddenFields
+} from './utils';
 
 import styles from './styles.module.css';
 
 const OrdersTable = ({ orders, onEdit }) => {
   const items = useMemo(() => prepareOrdersForTable(orders), [orders]);
 
-  return <InformationTable items={items} onEdit={onEdit} />;
+  return (
+    <InformationTable items={items} onEdit={onEdit} hiddenKeys={hiddenFields} />
+  );
 };
 
 const AddNewOrderButton = ({ onClick }) => (
   <AddButton onClick={onClick}>Add New Order</AddButton>
 );
 
-const OrdersList = ({ history }) => {
+const OrdersList = () => {
   const orders = useOrderList();
   const handleListItemOnClick = useLink(ORDER_DETAIL_URL, getIdObject);
   const handleAddButtonClick = useLink(ORDER_ADD_NEW_URL);

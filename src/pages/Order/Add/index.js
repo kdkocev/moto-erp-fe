@@ -1,13 +1,15 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useCallback } from 'react';
 
 import Paper from '@material-ui/core/Paper';
 import Button from '@material-ui/core/Button';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 
 import OrderForm from 'pages/Order/Detail/OrderForm';
-import { callUrl, post, get } from 'utils/sdk';
 import { formatDatesInObjectForApi } from 'utils/dates';
-import { BASE_URL, ORDER_LIST_URL } from 'config/urls';
+import { callLink } from 'utils/links';
+import { ORDER_LIST_URL } from 'config/urls';
+import { createOrder } from 'sdk/order';
+import { usePartList } from 'sdk/part';
 
 import styles from './styles.module.css';
 
@@ -18,22 +20,15 @@ const BackButton = ({ onClick }) => (
 );
 
 const AddOrder = ({ history }) => {
-  const [parts, setParts] = useState([]);
+  const parts = usePartList();
 
   const handleSubmit = useCallback(
-    (data) => {
-      return callUrl(post, `${BASE_URL}/order`, formatDatesInObjectForApi(data))
-        .then(() => {
-          history.push(ORDER_LIST_URL);
-        })
-        .catch(() => {});
-    },
+    (data) =>
+      createOrder(formatDatesInObjectForApi(data))
+        .then(() => callLink(history, ORDER_LIST_URL))
+        .catch(() => {}),
     [history]
   );
-
-  useEffect(() => {
-    callUrl(get, `${BASE_URL}/part`).then(setParts);
-  }, []);
 
   return (
     <Paper className={styles.paper}>

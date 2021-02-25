@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import moment from 'moment';
-import { removeKeys } from 'utils/common';
+import { replaceKeysWithLabels } from 'utils/common';
 
 export const sortAndGroupOrders = (orders) => {
   const sortedOrders = _.reverse(_.sortBy(orders, 'created_at'));
@@ -16,6 +16,8 @@ export const sortAndGroupOrders = (orders) => {
   return monthsOrders;
 };
 
+export const hiddenFields = ['id', 'month'];
+
 const dateKeys = [
   'date_received',
   'date_of_expedition',
@@ -23,7 +25,6 @@ const dateKeys = [
   'completed_at',
   'created_at'
 ];
-const hiddenFields = ['month'];
 const labelMappings = {
   id: 'ID',
   order_number: 'Order No',
@@ -47,24 +48,13 @@ const formatDateKeys = (dateKeys) => (value, key) => {
   return value;
 };
 
-const removeHiddenFields = (orders, hiddenFields) =>
-  orders.map((order) => removeKeys(order, hiddenFields));
-
-const mapLabels = (labels) => (value, key) => _.get(labels, key, key);
-const replaceKeysWithLabels = (items, labels) =>
-  items.map((item) => _.mapKeys(item, mapLabels(labels)));
-
 const formatDatesInObject = (dateKeys) => (object) =>
   _.mapValues(object, formatDateKeys(dateKeys));
-const formatDatesInObjects = (objects, dateKeys) =>
-  objects.map(formatDatesInObject(dateKeys));
 
-// TODO compose here? Are those functions composable?
+const replaceKeysWithLabelsInOrder = (order) => ({
+  ...replaceKeysWithLabels(order, labelMappings),
+  id: order.id
+});
+
 export const prepareOrdersForTable = (orders) =>
-  formatDatesInObjects(
-    replaceKeysWithLabels(
-      removeHiddenFields(orders, hiddenFields),
-      labelMappings
-    ),
-    dateKeys
-  );
+  orders.map(formatDatesInObject(dateKeys)).map(replaceKeysWithLabelsInOrder);

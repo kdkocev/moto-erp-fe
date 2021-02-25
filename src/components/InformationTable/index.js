@@ -21,24 +21,30 @@ import styles from './styles.module.css';
 //   }
 // ]
 
-const InformationTable = ({ items, onEdit }) => {
+const InformationTable = ({ items, onEdit, hiddenKeys }) => {
   return (
     <TableContainer component={Paper} className={styles.table}>
       <Table>
         <TableHead>
           <TableRow>
-            {Object.keys(_.get(items, '[0]', {})).map((key) => (
-              <TableCell key={key}>{key}</TableCell>
-            ))}
+            {Object.keys(_.get(items, '[0]', {})).map((key) => {
+              if (_.indexOf(hiddenKeys, key) === -1) {
+                return <TableCell key={key}>{key}</TableCell>;
+              }
+              return undefined;
+            })}
             <TableCell></TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {items.map((item, index) => (
             <TableRow key={item.id || index}>
-              {Object.keys(item).map((key) => (
-                <TableCell key={key}>{item[key]}</TableCell>
-              ))}
+              {Object.keys(item).map((key) => {
+                if (_.indexOf(hiddenKeys, key) === -1) {
+                  return <TableCell key={key}>{item[key]}</TableCell>;
+                }
+                return undefined;
+              })}
               <TableCell>
                 <IconButton onClick={() => onEdit(item)}>
                   <EditIcon />

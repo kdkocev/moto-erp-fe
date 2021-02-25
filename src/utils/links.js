@@ -13,3 +13,7 @@ export const useLink = (url, mapParams = identity) => {
     [history, url, mapParams]
   );
 };
+
+export const callLink = (history, url, params) => {
+  history.push(reverse(url, params));
+};

@@ -1,60 +1,25 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import _ from 'lodash';
+import React, { useMemo } from 'react';
 
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
-import IconButton from '@material-ui/core/IconButton';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import EditIcon from '@material-ui/icons/Edit';
 import AddIcon from '@material-ui/icons/Add';
 
-import { BASE_URL, PART_DETAIL_URL, PART_ADD_NEW_URL } from 'config/urls';
-import { callUrl, get, reverse } from 'utils/sdk';
+import InformationTable from 'components/InformationTable';
+import { PART_DETAIL_URL, PART_ADD_NEW_URL } from 'config/urls';
+import { useLink } from 'utils/links';
+import { getIdObject } from 'utils/common';
+import { usePartList } from 'sdk/part';
+
+import { preparePartsForTable, hiddenFields } from './utils';
 
 import styles from './styles.module.css';
 
-const labelMappings = {
-  id: 'ID',
-  number: 'Number',
-  price_total: 'Price Total',
-  price_machining: 'Price Machining',
-  casting: 'Casting ID'
-};
+const PartTable = ({ parts, onEdit }) => {
+  const items = useMemo(() => preparePartsForTable(parts), [parts]);
 
-const PartTable = ({ parts, handleListItemOnClick }) => {
   return (
-    <TableContainer component={Paper} className={styles.table}>
-      <Table>
-        <TableHead>
-          <TableRow>
-            {Object.keys(_.get(parts, '[0]', {})).map((key) => (
-              <TableCell key={key}>{_.get(labelMappings, key, key)}</TableCell>
-            ))}
-            <TableCell></TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {parts.map((part) => (
-            <TableRow key={part.id}>
-              {Object.keys(part).map((key) => (
-                <TableCell key={key}>{part[key]}</TableCell>
-              ))}
-              <TableCell>
-                <IconButton onClick={() => handleListItemOnClick(part)}>
-                  <EditIcon />
-                </IconButton>
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+    <InformationTable items={items} onEdit={onEdit} hiddenKeys={hiddenFields} />
   );
 };
 
@@ -68,23 +33,11 @@ const AddNewPartButton = ({ onClick }) => (
   </Button>
 );
 
-const PartList = ({ history }) => {
-  const [parts, setParts] = useState([]);
+const PartList = () => {
+  const parts = usePartList();
 
-  useEffect(() => {
-    callUrl(get, `${BASE_URL}/part`).then(setParts);
-  }, []);
-
-  const handleListItemOnClick = useCallback(
-    (part) => {
-      history.push(reverse(PART_DETAIL_URL, { id: part.id }));
-    },
-    [history]
-  );
-
-  const handleAddButtonClick = useCallback(() => {
-    history.push(PART_ADD_NEW_URL);
-  }, [history]);
+  const handleListItemOnClick = useLink(PART_DETAIL_URL, getIdObject);
+  const handleAddButtonClick = useLink(PART_ADD_NEW_URL);
 
   return (
     <>
@@ -98,10 +51,7 @@ const PartList = ({ history }) => {
       </Paper>
       <Paper className={styles.paper}>
         <div>
-          <PartTable
-            parts={parts}
-            handleListItemOnClick={handleListItemOnClick}
-          />
+          <PartTable parts={parts} onEdit={handleListItemOnClick} />
           <div className={styles.addButton}>
             <AddNewPartButton onClick={handleAddButtonClick} />
           </div>
