@@ -8,13 +8,15 @@ import InformationTable from 'components/InformationTable';
 import { ORDER_DETAIL_URL, ORDER_ADD_NEW_URL } from 'config/urls';
 import { useLink } from 'utils/links';
 import { getIdObject } from 'utils/common';
-import { useRefreshKey } from 'utils/sdk';
+import { useRefreshable } from 'utils/sdk';
 import { useOrderList, deleteOrder } from 'sdk/order';
+import { usePartList } from 'sdk/part';
 
 import {
   sortAndGroupOrders,
   prepareOrdersForTable,
-  hiddenFields
+  hiddenFields,
+  replacePartIdsWithNumbers
 } from './utils';
 
 import styles from './styles.module.css';
@@ -37,8 +39,14 @@ const AddNewOrderButton = ({ onClick }) => (
 );
 
 const OrdersList = () => {
-  const [refreshKey, refreshOrderList] = useRefreshKey();
-  const orders = useOrderList(refreshKey);
+  const [orderList, refreshOrderList] = useRefreshable(useOrderList);
+  const partList = usePartList();
+
+  const orders = useMemo(() => replacePartIdsWithNumbers(orderList, partList), [
+    orderList,
+    partList
+  ]);
+
   const onItemEdit = useLink(ORDER_DETAIL_URL, getIdObject);
   const onItemDelete = useCallback(
     (object) => deleteOrder(object.id).then(refreshOrderList),

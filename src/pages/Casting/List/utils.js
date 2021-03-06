@@ -1,4 +1,4 @@
-import { replaceKeysWithLabels } from 'utils/common';
+import { replaceKeys } from 'utils/common';
 
 export const hiddenFields = ['id'];
 
@@ -9,6 +9,6 @@ const labelMappings = {
 
 export const prepareCastingsForTable = (castings) =>
   castings.map((casting) => ({
-    ...replaceKeysWithLabels(casting, labelMappings),
+    ...replaceKeys(casting, labelMappings),
     id: casting.id
   }));

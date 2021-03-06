@@ -2,13 +2,13 @@ import React, { useCallback, useMemo } from 'react';
 
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
-import Button from '@material-ui/core/Button';
 
 import InformationTable from 'components/InformationTable';
+import AddButton from 'components/AddButton';
 import { CASTING_DETAIL_URL, CASTING_ADD_NEW_URL } from 'config/urls';
 import { useLink } from 'utils/links';
 import { getIdObject } from 'utils/common';
-import { useRefreshKey } from 'utils/sdk';
+import { useRefreshable } from 'utils/sdk';
 import { useCastingList, deleteCasting } from 'sdk/casting';
 
 import { prepareCastingsForTable, hiddenFields } from './utils';
@@ -29,14 +29,11 @@ const CastingTable = ({ castings, onEdit, onDelete }) => {
 };
 
 const AddNewCastingButton = ({ onClick }) => (
-  <Button variant="contained" color="primary" onClick={onClick}>
-    Add new casting
-  </Button>
+  <AddButton onClick={onClick}>Add new casting</AddButton>
 );
 
 const CastingList = ({ history }) => {
-  const [refreshKey, refreshCastingList] = useRefreshKey();
-  const castings = useCastingList(refreshKey);
+  const [castings, refreshCastingList] = useRefreshable(useCastingList);
 
   const onItemEdit = useLink(CASTING_DETAIL_URL, getIdObject);
   const onItemDelete = (object) =>

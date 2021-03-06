@@ -2,22 +2,26 @@ import React, { useMemo, useCallback } from 'react';
 
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
-import Button from '@material-ui/core/Button';
-import AddIcon from '@material-ui/icons/Add';
 
 import InformationTable from 'components/InformationTable';
+import AddButton from 'components/AddButton';
 import { PART_DETAIL_URL, PART_ADD_NEW_URL } from 'config/urls';
 import { useLink } from 'utils/links';
 import { getIdObject } from 'utils/common';
-import { useRefreshKey } from 'utils/sdk';
+import { useRefreshable } from 'utils/sdk';
 import { usePartList, deletePart } from 'sdk/part';
+import { useCastingList } from 'sdk/casting';
 
-import { preparePartsForTable, hiddenFields } from './utils';
+import {
+  setPartsLabels,
+  hiddenFields,
+  replaceCastingIdsWithNumbers
+} from './utils';
 
 import styles from './styles.module.css';
 
 const PartTable = ({ parts, onEdit, onDelete }) => {
-  const items = useMemo(() => preparePartsForTable(parts), [parts]);
+  const items = useMemo(() => setPartsLabels(parts), [parts]);
 
   return (
     <InformationTable
@@ -30,18 +34,17 @@ const PartTable = ({ parts, onEdit, onDelete }) => {
 };
 
 const AddNewPartButton = ({ onClick }) => (
-  <Button
-    variant="contained"
-    color="primary"
-    onClick={onClick}
-    startIcon={<AddIcon />}>
-    Add new part
-  </Button>
+  <AddButton onClick={onClick}>Add new part</AddButton>
 );
 
 const PartList = () => {
-  const [refreshKey, refreshPartList] = useRefreshKey();
-  const parts = usePartList(refreshKey);
+  const [partList, refreshPartList] = useRefreshable(usePartList);
+  const castingList = useCastingList();
+
+  const parts = useMemo(
+    () => replaceCastingIdsWithNumbers(partList, castingList),
+    [partList, castingList]
+  );
 
   const onItemEdit = useLink(PART_DETAIL_URL, getIdObject);
   const onItemDelete = useCallback(

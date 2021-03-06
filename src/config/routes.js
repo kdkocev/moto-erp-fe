@@ -3,6 +3,7 @@ import React from 'react';
 import { createBrowserHistory } from 'history';
 import { Router, Route, Switch, Redirect } from 'react-router-dom';
 import PageLayout from 'components/PageLayout';
+import Home from 'pages/Home';
 import Login from 'pages/Login';
 import OrderList from 'pages/Order/List';
 import OrderDetail from 'pages/Order/Detail';
@@ -34,9 +35,7 @@ const Routes = () => {
     <Router history={history}>
       <Switch>
         <PageLayout>
-          <Route exact path={'/'}>
-            Landing
-          </Route>
+          <Route exact path={'/'} component={Home} />
           <Route exact path={ORDER_LIST_URL} component={OrderList} />
           <Route exact path={ORDER_DETAIL_URL} component={OrderDetail} />
           <Route exact path={ORDER_ADD_NEW_URL} component={OrderAdd} />

@@ -1,17 +1,22 @@
 import { BASE_URL } from 'config/urls';
-import { useFetch, callUrl, post, patch, remove } from 'utils/sdk';
+import { callUrl, get, post, patch, remove, useFetch } from 'utils/sdk';
 
-export const useCasting = (id, refreshKey) =>
-  useFetch(id, `${BASE_URL}/casting/${id}`, undefined, refreshKey);
+const OBJECT_API_URL = (id) => `${BASE_URL}/casting/${id}`;
+const LIST_OBJECTS_API_URL = `${BASE_URL}/casting`;
 
-export const useCastingList = (refreshKey) =>
-  useFetch(undefined, `${BASE_URL}/casting`, [], refreshKey);
+const GET_URL = (id) => OBJECT_API_URL(id);
+const LIST_URL = LIST_OBJECTS_API_URL;
+const CREATE_URL = LIST_OBJECTS_API_URL;
+const UPDATE_URL = (id) => OBJECT_API_URL(id);
+const DELETE_URL = (id) => OBJECT_API_URL(id);
 
-export const createCasting = (data) =>
-  callUrl(post, `${BASE_URL}/casting`, data);
+export const fetchCasting = (id) => callUrl(get, GET_URL(id));
+export const fetchCastingList = () => callUrl(get, LIST_URL);
+export const createCasting = (data) => callUrl(post, CREATE_URL, data);
+export const updateCasting = (id, data) => callUrl(patch, UPDATE_URL(id), data);
+export const deleteCasting = (id) => callUrl(remove, DELETE_URL(id));
 
-export const updateCasting = (id, data) =>
-  callUrl(patch, `${BASE_URL}/casting/${id}`, data);
+// ---- Hooks ----
 
-export const deleteCasting = (id) =>
-  callUrl(remove, `${BASE_URL}/casting/${id}`);
+export const useCasting = (id) => useFetch(fetchCasting, undefined, id);
+export const useCastingList = (key) => useFetch(fetchCastingList, [], key); // Key for useRefreshable

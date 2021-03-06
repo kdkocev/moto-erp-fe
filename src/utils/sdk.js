@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import _ from 'lodash';
 import axios from 'axios';
 
@@ -37,24 +37,22 @@ export const reverse = (url, params = {}) => {
   return result;
 };
 
-// `key` is used for force refetching
-// Whenever key changes - the request will run again
-export const useFetch = (id, url, initial, key) => {
-  const [object, setObject] = useState(initial);
+export const useFetch = (sdk, initial, requestData) => {
+  const [data, setData] = useState(initial);
 
   useEffect(() => {
     let didCancel = false;
-    callUrl(get, url).then((response) => {
+    sdk(requestData).then((response) => {
       if (!didCancel) {
-        setObject(response);
+        setData(response);
       }
     });
     return () => {
       didCancel = true;
     };
-  }, [id, url, key]);
+  }, [requestData, sdk]);
 
-  return object;
+  return data;
 };
 
 export const callUrl = (method, url, params) => {
@@ -72,4 +70,15 @@ export const useRefreshKey = () => {
   const [refreshCounter, setRefreshCounter] = useState(0);
   const refresh = useCallback(() => setRefreshCounter((x) => x + 1), []);
   return [refreshCounter, refresh];
+};
+
+export const useRefreshable = (hook, ...params) => {
+  const [refreshKey, refresh] = useRefreshKey();
+
+  const parameters = useMemo(() => [...params, refreshKey], [
+    refreshKey,
+    params
+  ]);
+
+  return [hook.apply(this, parameters), refresh];
 };
