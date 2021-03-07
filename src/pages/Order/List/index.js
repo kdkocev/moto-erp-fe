@@ -13,7 +13,6 @@ import { useOrderList, deleteOrder } from 'sdk/order';
 import { usePartList } from 'sdk/part';
 
 import {
-  sortAndGroupOrders,
   prepareOrdersForTable,
   hiddenFields,
   replacePartIdsWithNumbers
@@ -55,8 +54,6 @@ const OrdersList = () => {
 
   const handleAddButtonClick = useLink(ORDER_ADD_NEW_URL);
 
-  const monthsOrders = useMemo(() => sortAndGroupOrders(orders), [orders]);
-
   return (
     <>
       <Paper className={styles.paper}>
@@ -69,19 +66,11 @@ const OrdersList = () => {
       </Paper>
       <Paper className={styles.paper}>
         <div>
-          {Object.keys(monthsOrders).map((month) => (
-            <React.Fragment key={month}>
-              <div className={styles.monthSeparator}>
-                <Typography variant="h5">{month}</Typography>
-              </div>
-              <OrdersTable
-                orders={monthsOrders[month]}
-                onEdit={onItemEdit}
-                onDelete={onItemDelete}
-              />
-            </React.Fragment>
-          ))}
-
+          <OrdersTable
+            orders={orders}
+            onEdit={onItemEdit}
+            onDelete={onItemDelete}
+          />
           <div className={styles.addButton}>
             <AddNewOrderButton onClick={handleAddButtonClick} />
           </div>

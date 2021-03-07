@@ -2,21 +2,7 @@ import _ from 'lodash';
 import moment from 'moment';
 import { curry, replaceKeys } from 'utils/common';
 
-export const sortAndGroupOrders = (orders) => {
-  const sortedOrders = _.reverse(_.sortBy(orders, 'created_at'));
-
-  const monthsOrders = _.groupBy(
-    _.map(sortedOrders, (order) => ({
-      ...order,
-      month: moment(order.created_at).format('MMMM')
-    })),
-    'month'
-  );
-
-  return monthsOrders;
-};
-
-export const hiddenFields = ['id', 'month'];
+export const hiddenFields = ['id'];
 
 const dateKeys = [
   'date_received',
@@ -26,8 +12,7 @@ const dateKeys = [
   'created_at'
 ];
 const labelMappings = {
-  id: 'ID',
-  order_number: 'Order No',
+  number: 'Order No',
   amount: 'Amount',
   date_received: 'Received',
   date_of_expedition: 'Expedition',

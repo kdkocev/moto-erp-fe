@@ -21,7 +21,7 @@ const validationSchema = yup.object({});
 
 const emptyOrder = {
   id: '',
-  order_number: '',
+  number: '',
   part: '',
   amount: '',
   date_received: moment(),
@@ -95,15 +95,13 @@ const OrderForm = ({ order, parts = [], onSubmit }) => {
         />
         <TextField
           fullWidth
-          id="order_number"
-          name="order_number"
+          id="number"
+          name="number"
           label="Order number"
-          value={formik.values.order_number}
+          value={formik.values.number}
           onChange={formik.handleChange}
-          error={
-            formik.touched.order_number && Boolean(formik.errors.order_number)
-          }
-          helperText={formik.touched.order_number && formik.errors.order_number}
+          error={formik.touched.number && Boolean(formik.errors.number)}
+          helperText={formik.touched.number && formik.errors.number}
         />
         <SelectField
           fullWidth
