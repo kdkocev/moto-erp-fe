@@ -5,6 +5,7 @@ import Button from '@material-ui/core/Button';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 
 import OrderForm from 'pages/Order/Detail/OrderForm';
+import { Left, Right } from 'utils/common';
 import { formatDatesInObjectForApi } from 'utils/dates';
 import { callLink } from 'utils/links';
 import { ORDER_LIST_URL } from 'config/urls';
@@ -22,11 +23,14 @@ const BackButton = ({ onClick }) => (
 const AddOrder = ({ history }) => {
   const parts = usePartList();
 
+  // Return Either
   const handleSubmit = useCallback(
     (data) =>
       createOrder(formatDatesInObjectForApi(data))
-        .then(() => callLink(history, ORDER_LIST_URL))
-        .catch(() => {}),
+        .then(() => Right(callLink(history, ORDER_LIST_URL)))
+        .catch((error) => {
+          return Left(error.response.data);
+        }),
     [history]
   );
 

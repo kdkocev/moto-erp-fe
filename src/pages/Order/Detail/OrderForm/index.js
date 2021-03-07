@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import _ from 'lodash';
 import moment from 'moment';
 import { useFormik } from 'formik';
@@ -9,10 +9,9 @@ import TextField from '@material-ui/core/TextField';
 import { DatePicker } from '@material-ui/pickers';
 import Button from '@material-ui/core/Button';
 import LinearProgress from '@material-ui/core/LinearProgress';
-import Select from '@material-ui/core/Select';
-import MenuItem from '@material-ui/core/MenuItem';
-import FormControl from '@material-ui/core/FormControl';
-import InputLabel from '@material-ui/core/InputLabel';
+
+import SelectField from 'components/SelectField';
+import { isPromise } from 'utils/common';
 
 import styles from './styles.module.css';
 
@@ -48,20 +47,40 @@ const OrderForm = ({ order, parts = [], onSubmit }) => {
   const initialValues = getInitialValues(order);
 
   const handleSubmit = useCallback(
-    async (data) => {
+    (data, formikBag) => {
       if (onSubmit) {
-        // If onSubmit is a promise
-        if (Promise.resolve(onSubmit) === onSubmit) {
-          setSubmitting(true);
-          onSubmit(data).then(() => {
+        setSubmitting(true);
+        const result = onSubmit(data);
+
+        if (isPromise(result)) {
+          result.then((either) => {
+            if (either && either.isEither) {
+              either.fold(
+                (errors) => {
+                  formikBag.setErrors(errors);
+                },
+                () => {}
+              );
+            }
+
             setSubmitting(false);
           });
         } else {
-          onSubmit(data);
+          setSubmitting(false);
         }
       }
     },
     [onSubmit]
+  );
+
+  const partOptions = useMemo(
+    () =>
+      parts.map((part) => ({
+        key: part.id,
+        value: part.id,
+        label: part.number
+      })),
+    [parts]
   );
 
   const formik = useFormik({
@@ -100,23 +119,17 @@ const OrderForm = ({ order, parts = [], onSubmit }) => {
           }
           helperText={formik.touched.order_number && formik.errors.order_number}
         />
-        <FormControl fullWidth>
-          <InputLabel>Part</InputLabel>
-          <Select
-            fullWidth
-            id="part"
-            name="part"
-            label="Part"
-            value={formik.values.part}
-            onChange={formik.handleChange}
-            error={formik.touched.part && Boolean(formik.errors.part)}>
-            {parts.map((part) => (
-              <MenuItem key={part.id} value={part.id}>
-                {part.number}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
+        <SelectField
+          fullWidth
+          id="part"
+          name="part"
+          label="Part"
+          value={formik.values.part}
+          onChange={formik.handleChange}
+          error={formik.touched.part && Boolean(formik.errors.part)}
+          helperText={formik.touched.part && formik.errors.part}
+          options={partOptions}
+        />
         <TextField
           fullWidth
           id="amount"
