@@ -1,11 +1,13 @@
 import React, { useState, useCallback } from 'react';
+import _ from 'lodash';
 import { useHistory } from 'react-router-dom';
 
 import Paper from '@material-ui/core/Paper';
 import Button from '@material-ui/core/Button';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 
-import SuccessAlert from 'components/SuccessAlert';
+import { Left, Right } from 'utils/either';
+import { notifySuccess } from 'utils/notifications';
 import { usePart, updatePart } from 'sdk/part';
 import { useCastingList } from 'sdk/casting';
 
@@ -26,21 +28,17 @@ const PartDetail = ({ match }) => {
   const part = usePart(id);
   const castings = useCastingList();
 
-  const [isSuccess, setIsSuccess] = useState(false);
-
   const handleSubmit = useCallback(
-    (data) => updatePart(id, data).then(() => setIsSuccess(true)),
+    (data) =>
+      updatePart(id, data)
+        .then(() => Right(notifySuccess('Part saved!')))
+        .catch((error) => Left(_.get(error, 'data', {}))),
     [id]
   );
 
   return (
     <Paper className={styles.paper}>
       <BackButton onClick={() => history.goBack()} />
-      <SuccessAlert
-        open={isSuccess}
-        onClose={() => setIsSuccess(false)}
-        message="Part saved!"
-      />
       {part && (
         <PartForm part={part} castings={castings} onSubmit={handleSubmit} />
       )}

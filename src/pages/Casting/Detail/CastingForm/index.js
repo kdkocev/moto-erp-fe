@@ -7,6 +7,9 @@ import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import LinearProgress from '@material-ui/core/LinearProgress';
 
+import { curry, toPromise } from 'utils/common';
+import { setErrorsIfAny } from 'utils/forms';
+
 import styles from './styles.module.css';
 
 const validationSchema = yup.object({});
@@ -28,17 +31,12 @@ const CastingForm = ({ casting, onSubmit }) => {
   const initialValues = getInitialValues(casting);
 
   const handleSubmit = useCallback(
-    async (data) => {
+    (data, formikBag) => {
       if (onSubmit) {
-        // If onSubmit is a promise
-        if (Promise.resolve(onSubmit) === onSubmit) {
-          setSubmitting(true);
-          onSubmit(data).then(() => {
-            setSubmitting(false);
-          });
-        } else {
-          onSubmit(data);
-        }
+        setSubmitting(true);
+        toPromise(onSubmit(data))
+          .then(curry(setErrorsIfAny)(formikBag.setErrors))
+          .then(() => setSubmitting(false));
       }
     },
     [onSubmit]

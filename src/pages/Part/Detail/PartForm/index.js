@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 
@@ -10,6 +10,10 @@ import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
+
+import SelectField from 'components/SelectField';
+import { curry, toPromise } from 'utils/common';
+import { setErrorsIfAny } from 'utils/forms';
 
 import styles from './styles.module.css';
 
@@ -35,20 +39,25 @@ const PartForm = ({ part, castings = [], onSubmit }) => {
   const initialValues = getInitialValues(part);
 
   const handleSubmit = useCallback(
-    async (data) => {
+    (data, formikBag) => {
       if (onSubmit) {
-        // If onSubmit is a promise
-        if (Promise.resolve(onSubmit) === onSubmit) {
-          setSubmitting(true);
-          onSubmit(data).then(() => {
-            setSubmitting(false);
-          });
-        } else {
-          onSubmit(data);
-        }
+        setSubmitting(true);
+        toPromise(onSubmit(data))
+          .then(curry(setErrorsIfAny)(formikBag.setErrors))
+          .then(() => setSubmitting(false));
       }
     },
     [onSubmit]
+  );
+
+  const castingOptions = useMemo(
+    () =>
+      castings.map((casting) => ({
+        key: casting.id,
+        value: casting.id,
+        label: casting.number
+      })),
+    [castings]
   );
 
   const formik = useFormik({
@@ -112,23 +121,17 @@ const PartForm = ({ part, castings = [], onSubmit }) => {
             formik.touched.price_machining && formik.errors.price_machining
           }
         />
-        <FormControl fullWidth>
-          <InputLabel>Casting</InputLabel>
-          <Select
-            id="casting"
-            name="casting"
-            label="Casting"
-            value={formik.values.casting}
-            onChange={formik.handleChange}
-            error={formik.touched.casting && Boolean(formik.errors.casting)}>
-            {castings.map((casting) => (
-              <MenuItem key={casting.id} value={casting.id}>
-                {casting.number}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-
+        <SelectField
+          fullWidth
+          id="casting"
+          name="casting"
+          label="Casting"
+          value={formik.values.casting}
+          onChange={formik.handleChange}
+          error={formik.touched.casting && Boolean(formik.errors.casting)}
+          options={castingOptions}
+          helperText={formik.touched.casting && formik.errors.casting}
+        />
         <div className={styles.submitButtonContainer}>
           {submitting && <LinearProgress color="primary" />}
           <Button

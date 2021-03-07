@@ -12,6 +12,7 @@ import LinearProgress from '@material-ui/core/LinearProgress';
 
 import SelectField from 'components/SelectField';
 import { curry, toPromise } from 'utils/common';
+import { setErrorsIfAny } from 'utils/forms';
 
 import styles from './styles.module.css';
 
@@ -42,12 +43,6 @@ const getInitialValues = (order) => {
   return emptyOrder;
 };
 
-const showErrorsIfAny = (setErrors, either) => {
-  if (either && either.isEither) {
-    either.fold(setErrors, () => {});
-  }
-};
-
 const OrderForm = ({ order, parts = [], onSubmit }) => {
   const [submitting, setSubmitting] = useState(false);
   const initialValues = getInitialValues(order);
@@ -57,7 +52,7 @@ const OrderForm = ({ order, parts = [], onSubmit }) => {
       if (onSubmit) {
         setSubmitting(true);
         toPromise(onSubmit(data))
-          .then(curry(showErrorsIfAny)(formikBag.setErrors))
+          .then(curry(setErrorsIfAny)(formikBag.setErrors))
           .then(() => setSubmitting(false));
       }
     },
