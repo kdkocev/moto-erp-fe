@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import _ from 'lodash';
 
 import Paper from '@material-ui/core/Paper';
@@ -24,6 +24,15 @@ import styles from './styles.module.css';
 // ]
 
 const InformationTable = ({ items, onEdit, onDelete, hiddenKeys }) => {
+  const handleDelete = useCallback(
+    (item) => {
+      if (window.confirm('Are you sure you want to delete this item?')) {
+        onDelete(item);
+      }
+    },
+    [onDelete]
+  );
+
   return (
     <TableContainer component={Paper} className={styles.table}>
       <Table>
@@ -52,7 +61,7 @@ const InformationTable = ({ items, onEdit, onDelete, hiddenKeys }) => {
                   <IconButton onClick={() => onEdit(item)}>
                     <EditIcon />
                   </IconButton>
-                  <IconButton onClick={() => onDelete(item)}>
+                  <IconButton onClick={() => handleDelete(item)}>
                     <DeleteForeverIcon />
                   </IconButton>
                 </Box>
