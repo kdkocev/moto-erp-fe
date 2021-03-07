@@ -6,8 +6,8 @@ import InputLabel from '@material-ui/core/InputLabel';
 import FormControl from '@material-ui/core/FormControl';
 import FormHelperText from '@material-ui/core/FormHelperText';
 
-const SelectField = (props) => {
-  const { label, fullWidth, error, options, helperText } = props;
+const SelectField = ({ helperText, ...props }) => {
+  const { label, fullWidth, error, options } = props;
 
   return (
     <FormControl fullWidth={fullWidth}>

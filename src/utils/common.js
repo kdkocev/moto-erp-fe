@@ -2,6 +2,9 @@ import _ from 'lodash';
 
 export const identity = (x) => x;
 
+/**
+ * Curries the given function and executes it when all of the arguments are passed
+ */
 export const curry = (f) => {
   const innerCurry = (...args) => {
     if (args.length >= f.length) {
@@ -12,45 +15,49 @@ export const curry = (f) => {
   return innerCurry;
 };
 
+/**
+ * Returns an object with a key id and value - the id of the argument.
+ * Used mainly to prettify the code.
+ */
 export const getIdObject = (object) => ({ id: object.id });
 
 /**
- * Example:
+ * Example arguments:
+ *
+ * object = {
+ *   id: 1,
+ *   order_number: 2,
+ *   key: 3
+ * }
  *
  * newKeys = {
  *   id: 'ID',
  *   order_number: 'Order No'
- * };
+ * }
+ *
+ * Example response:
+ *
+ * object = {
+ *   ID: 1,
+ *   'Order No': 2,
+ *   key: 3
+ * }
+ *
  */
-
 export const replaceKeys = (object, newKeys) =>
   _.mapKeys(object, (value, key) => _.get(newKeys, key, key));
 
 /**
- * Either Monad implemenation by using Left and Right
- *
- * Left is considered to be the Error path.
- * Right is considered to be the Correct path.
+ * Checks if the value is a promise or not.
  */
-
-export const Left = (x) => ({
-  map: () => this,
-  isEither: true,
-  isLeft: true,
-  isRight: false,
-  fold: (f, g) => f(x),
-  getOrElse: (y) => y
-});
-
-export const Right = (x) => ({
-  map: (f) => new Right(f(x)),
-  isEither: true,
-  isLeft: false,
-  isRight: true,
-  fold: (f, g) => g(x),
-  getOrElse: (y) => x
-});
-
 export const isPromise = (p) => {
   return Promise.resolve(p) === p;
+};
+
+/**
+ * Doesn't change the value if it's already a promise.
+ * Wraps the value in a promise if it's not.
+ */
+export const toPromise = (p) => {
+  return Promise.resolve(p);
 };

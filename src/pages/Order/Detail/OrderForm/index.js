@@ -11,7 +11,7 @@ import Button from '@material-ui/core/Button';
 import LinearProgress from '@material-ui/core/LinearProgress';
 
 import SelectField from 'components/SelectField';
-import { isPromise } from 'utils/common';
+import { curry, toPromise } from 'utils/common';
 
 import styles from './styles.module.css';
 
@@ -42,6 +42,12 @@ const getInitialValues = (order) => {
   return emptyOrder;
 };
 
+const showErrorsIfAny = (setErrors, either) => {
+  if (either && either.isEither) {
+    either.fold(setErrors, () => {});
+  }
+};
+
 const OrderForm = ({ order, parts = [], onSubmit }) => {
   const [submitting, setSubmitting] = useState(false);
   const initialValues = getInitialValues(order);
@@ -50,24 +56,9 @@ const OrderForm = ({ order, parts = [], onSubmit }) => {
     (data, formikBag) => {
       if (onSubmit) {
         setSubmitting(true);
-        const result = onSubmit(data);
-
-        if (isPromise(result)) {
-          result.then((either) => {
-            if (either && either.isEither) {
-              either.fold(
-                (errors) => {
-                  formikBag.setErrors(errors);
-                },
-                () => {}
-              );
-            }
-
-            setSubmitting(false);
-          });
-        } else {
-          setSubmitting(false);
-        }
+        toPromise(onSubmit(data))
+          .then(curry(showErrorsIfAny)(formikBag.setErrors))
+          .then(() => setSubmitting(false));
       }
     },
     [onSubmit]

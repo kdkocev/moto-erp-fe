@@ -1,4 +1,6 @@
 import React from 'react';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 import Routes from 'config/routes';
 
@@ -10,6 +12,18 @@ const App = () => (
   <CssBaseline>
     <MuiPickersUtilsProvider utils={MomentUtils}>
       <Routes />
+
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar
+        newestOnTop
+        closeOnClick
+        rtl={false}
+        pauseOnVisibilityChange
+        draggable
+        pauseOnHover={false}
+      />
     </MuiPickersUtilsProvider>
   </CssBaseline>
 );

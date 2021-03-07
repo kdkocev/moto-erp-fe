@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import _ from 'lodash';
 import axios from 'axios';
+import { notifyError } from 'utils/notifications';
 
 export const getConfig = () => {
   let config = {
@@ -60,8 +61,13 @@ export const callUrl = (method, url, params) => {
     method(url, params)
       .then((response) => resolve(response.data))
       .catch((error) => {
-        console.error(error);
-        reject(error);
+        if (_.get(error, 'response.status') === 400) {
+          reject(error.response);
+        } else {
+          console.error(error);
+          notifyError(_.get(error, 'message', 'An error occurred.'));
+          reject(); // If it's not 400 - it can't be handled from caller
+        }
       });
   });
 };

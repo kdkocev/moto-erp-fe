@@ -1,11 +1,13 @@
 import React, { useState, useCallback } from 'react';
+import _ from 'lodash';
 import { useHistory } from 'react-router-dom';
 
 import Paper from '@material-ui/core/Paper';
 import Button from '@material-ui/core/Button';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 
-import SuccessAlert from 'components/SuccessAlert';
+import { Left, Right } from 'utils/either';
+import { notifySuccess } from 'utils/notifications';
 import { useOrder, updateOrder } from 'sdk/order';
 import { usePartList } from 'sdk/part';
 import OrderForm from './OrderForm';
@@ -25,24 +27,17 @@ const OrderDetail = ({ match }) => {
   const parts = usePartList();
   const order = useOrder(id);
 
-  const [isSuccess, setIsSuccess] = useState(false);
-
   const handleSubmit = useCallback(
     (data) =>
       updateOrder(id, data)
-        .then(() => setIsSuccess(true))
-        .catch(() => {}),
+        .then(() => Right(notifySuccess('Order saved!')))
+        .catch((error) => Left(_.get(error, 'data', {}))),
     [id]
   );
 
   return (
     <Paper className={styles.paper}>
       <BackButton onClick={() => history.goBack()} />
-      <SuccessAlert
-        open={isSuccess}
-        onClose={() => setIsSuccess(false)}
-        message="Order saved!"
-      />
       {order && (
         <OrderForm order={order} parts={parts} onSubmit={handleSubmit} />
       )}
