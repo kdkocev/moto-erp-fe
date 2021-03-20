@@ -13,6 +13,7 @@ import LinearProgress from '@material-ui/core/LinearProgress';
 import SelectField from 'components/SelectField';
 import { curry, toPromise } from 'utils/common';
 import { setErrorsIfAny } from 'utils/forms';
+import { t } from 'utils/translate';
 
 import styles from './styles.module.css';
 
@@ -78,7 +79,9 @@ const OrderForm = ({ order, parts = [], onSubmit }) => {
   return (
     <>
       <Typography variant="h3" classes={{ root: styles.heading }}>
-        {order ? 'Edit order' : 'Add order'}
+        {order
+          ? t('Edit order', 'Промени поръчка')
+          : t('Add order', 'Нова поръчка')}
       </Typography>
 
       <form className={styles.form} onSubmit={formik.handleSubmit}>
@@ -205,7 +208,7 @@ const OrderForm = ({ order, parts = [], onSubmit }) => {
             fullWidth
             type="submit"
             disabled={submitting}>
-            Submit
+            {t('Submit', 'Изпрати')}
           </Button>
         </div>
       </form>

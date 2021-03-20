@@ -1,0 +1,12 @@
+.buttons {
+  display: flex;
+  align-items: center;
+}
+
+.buttons > * + * {
+  margin-left: 20px;
+}
+
+.navigationDivider.navigationDivider {
+  background-color: white;
+}

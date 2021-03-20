@@ -74,17 +74,20 @@ export const callUrl = (method, url, params) => {
 
 export const useRefreshKey = () => {
   const [refreshCounter, setRefreshCounter] = useState(0);
-  const refresh = useCallback(() => setRefreshCounter((x) => x + 1), []);
+  // By assigning an empty object to refreshCounter - we change the value since the new object
+  // is different than the old one by reference. That way we also make sure to not add any values
+  // to the hook params
+  const refresh = useCallback(() => setRefreshCounter((x) => ({})), []);
   return [refreshCounter, refresh];
 };
 
-export const useRefreshable = (hook, ...params) => {
+export const useRefreshable = (hook, param) => {
   const [refreshKey, refresh] = useRefreshKey();
 
-  const parameters = useMemo(() => [...params, refreshKey], [
+  const parameters = useMemo(() => ({ ...param, refreshKey }), [
     refreshKey,
-    params
+    param
   ]);
 
-  return [hook.apply(this, parameters), refresh];
+  return [hook(parameters), refresh];
 };

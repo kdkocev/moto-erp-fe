@@ -8,6 +8,7 @@ import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 
 import { Left, Right } from 'utils/either';
 import { notifySuccess } from 'utils/notifications';
+import { t } from 'utils/translate';
 import { useOrder, updateOrder } from 'sdk/order';
 import { usePartList } from 'sdk/part';
 
@@ -17,7 +18,7 @@ import styles from './styles.module.css';
 
 const BackButton = ({ onClick }) => (
   <Button onClick={onClick} startIcon={<ArrowBackIosIcon />}>
-    Back
+    {t('Back', 'Назад')}
   </Button>
 );
 

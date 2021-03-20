@@ -9,6 +9,7 @@ import { PART_DETAIL_URL, PART_ADD_NEW_URL } from 'config/urls';
 import { useLink } from 'utils/links';
 import { getIdObject } from 'utils/common';
 import { useRefreshable } from 'utils/sdk';
+import { t } from 'utils/translate';
 import { usePartList, deletePart } from 'sdk/part';
 import { useCastingList } from 'sdk/casting';
 
@@ -34,7 +35,7 @@ const PartTable = ({ parts, onEdit, onDelete }) => {
 };
 
 const AddNewPartButton = ({ onClick }) => (
-  <AddButton onClick={onClick}>Add new part</AddButton>
+  <AddButton onClick={onClick}>{t('Add new part', 'Нов детайл')}</AddButton>
 );
 
 const PartList = () => {
@@ -57,7 +58,7 @@ const PartList = () => {
     <>
       <Paper className={styles.paper}>
         <div className={styles.header}>
-          <Typography variant="h4">Parts list</Typography>
+          <Typography variant="h4">{t('Parts list', 'Детайли')}</Typography>
           <div>
             <AddNewPartButton onClick={handleAddButtonClick} />
           </div>

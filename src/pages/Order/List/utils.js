@@ -11,7 +11,7 @@ const dateKeys = [
   'completed_at',
   'created_at'
 ];
-const labelMappings = {
+export const labelMappings = {
   number: 'Order No',
   amount: 'Amount',
   date_received: 'Received',
@@ -53,4 +53,11 @@ export const replacePartIdsWithNumbers = (orderList, partList) => {
     ...order,
     part: partIdToNumberObj[order.part]
   }));
+};
+
+export const mapSortKeyToLabelMappings = (key) => {
+  return (
+    (key.startsWith('-') ? '-' : '') +
+    _.get(labelMappings, _.dropWhile(key, (x) => x === '-').join(''), key)
+  );
 };

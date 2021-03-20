@@ -1,3 +1,10 @@
 .table.table {
   box-shadow: none;
 }
+
+.sortableHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  white-space: nowrap;
+}

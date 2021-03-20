@@ -11,7 +11,7 @@ const UPDATE_URL = (id) => OBJECT_API_URL(id);
 const DELETE_URL = (id) => OBJECT_API_URL(id);
 
 export const fetchOrder = (id) => callUrl(get, GET_URL(id));
-export const fetchOrderList = () => callUrl(get, LIST_URL);
+export const fetchOrderList = (filters) => callUrl(get, LIST_URL, filters);
 export const createOrder = (data) => callUrl(post, CREATE_URL, data);
 export const updateOrder = (id, data) => callUrl(patch, UPDATE_URL(id), data);
 export const deleteOrder = (id) => callUrl(remove, DELETE_URL(id));
@@ -19,4 +19,4 @@ export const deleteOrder = (id) => callUrl(remove, DELETE_URL(id));
 // ---- Hooks ----
 
 export const useOrder = (id) => useFetch(fetchOrder, undefined, id);
-export const useOrderList = (key) => useFetch(fetchOrderList, [], key); // Key for useRefreshable
+export const useOrderList = (filters) => useFetch(fetchOrderList, [], filters); // Key for useRefreshable

@@ -9,6 +9,7 @@ import { CASTING_DETAIL_URL, CASTING_ADD_NEW_URL } from 'config/urls';
 import { useLink } from 'utils/links';
 import { getIdObject } from 'utils/common';
 import { useRefreshable } from 'utils/sdk';
+import { t } from 'utils/translate';
 import { useCastingList, deleteCasting } from 'sdk/casting';
 
 import { prepareCastingsForTable, hiddenFields } from './utils';
@@ -29,7 +30,9 @@ const CastingTable = ({ castings, onEdit, onDelete }) => {
 };
 
 const AddNewCastingButton = ({ onClick }) => (
-  <AddButton onClick={onClick}>Add new casting</AddButton>
+  <AddButton onClick={onClick}>
+    {t('Add new casting', 'Нова отливка')}
+  </AddButton>
 );
 
 const CastingList = ({ history }) => {
@@ -47,7 +50,7 @@ const CastingList = ({ history }) => {
     <>
       <Paper className={styles.paper}>
         <div className={styles.header}>
-          <Typography variant="h4">Castings list</Typography>
+          <Typography variant="h4">{t('Castings list', 'Отливки')}</Typography>
           <div>
             <AddNewCastingButton onClick={handleAddButtonClick} />
           </div>

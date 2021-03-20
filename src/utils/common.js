@@ -61,3 +61,14 @@ export const isPromise = (p) => {
 export const toPromise = (p) => {
   return Promise.resolve(p);
 };
+
+/**
+ * Swaps the keys and the values of an object.
+ */
+export const swapKeysAndValues = (object) => {
+  let result = {};
+  Object.keys(object).forEach((key) => {
+    result[object[key]] = key;
+  });
+  return result;
+};

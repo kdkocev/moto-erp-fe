@@ -9,13 +9,14 @@ import CastingForm from 'pages/Casting/Detail/CastingForm';
 import { Left, Right } from 'utils/either';
 import { CASTING_LIST_URL } from 'config/urls';
 import { callLink } from 'utils/links';
+import { t } from 'utils/translate';
 import { createCasting } from 'sdk/casting';
 
 import styles from './styles.module.css';
 
 const BackButton = ({ onClick }) => (
   <Button onClick={onClick} startIcon={<ArrowBackIosIcon />}>
-    Back
+    {t('Back', 'Назад')}
   </Button>
 );
 

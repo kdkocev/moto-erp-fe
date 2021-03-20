@@ -9,6 +9,7 @@ import PartForm from 'pages/Part/Detail/PartForm';
 import { Left, Right } from 'utils/either';
 import { formatDatesInObjectForApi } from 'utils/dates';
 import { callLink } from 'utils/links';
+import { t } from 'utils/translate';
 import { PART_LIST_URL } from 'config/urls';
 import { createPart } from 'sdk/part';
 import { useCastingList } from 'sdk/casting';
@@ -17,7 +18,7 @@ import styles from './styles.module.css';
 
 const BackButton = ({ onClick }) => (
   <Button onClick={onClick} startIcon={<ArrowBackIosIcon />}>
-    Back
+    {t('Back', 'Назад')}
   </Button>
 );
 

@@ -9,13 +9,47 @@ import Button from '@material-ui/core/Button';
 import Drawer from '@material-ui/core/Drawer';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
+import Divider from '@material-ui/core/Divider';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import AssignmentIcon from '@material-ui/icons/Assignment';
 import GroupWorkIcon from '@material-ui/icons/GroupWork';
 import SettingsApplicationsIcon from '@material-ui/icons/SettingsApplications';
+import LanguageIcon from '@material-ui/icons/Language';
 
 import { ORDER_LIST_URL, CASTING_LIST_URL, PART_LIST_URL } from 'config/urls';
+import {
+  getCurrentLanguage,
+  LANGUAGES,
+  setLanguageBg,
+  setLanguageEn,
+  t
+} from 'utils/translate';
+
+import styles from './styles.module.css';
+
+const LangulageButton = () => {
+  const handleSetCurrentLanguage = () => {
+    if (getCurrentLanguage() === LANGUAGES.BG) {
+      setLanguageEn();
+      window.location.reload();
+    } else {
+      setLanguageBg();
+      window.location.reload();
+    }
+  };
+
+  return (
+    <Button
+      startIcon={<LanguageIcon />}
+      color="inherit"
+      variant="text"
+      onClick={handleSetCurrentLanguage}>
+      {getCurrentLanguage() === LANGUAGES.BG && 'EN'}
+      {getCurrentLanguage() === LANGUAGES.EN && 'BG'}
+    </Button>
+  );
+};
 
 const useStyles = makeStyles((theme) => ({
   drawerPaper: {
@@ -36,19 +70,19 @@ const useStyles = makeStyles((theme) => ({
 const menuItems = [
   {
     key: 'orders',
-    label: 'Orders',
+    label: t('Orders', 'Поръчки'),
     Icon: AssignmentIcon,
     url: ORDER_LIST_URL
   },
   {
     key: 'parts',
-    label: 'Parts',
+    label: t('Parts', 'Детайли'),
     Icon: GroupWorkIcon,
     url: PART_LIST_URL
   },
   {
     key: 'castings',
-    label: 'Castings',
+    label: t('Castings', 'Отливки'),
     Icon: SettingsApplicationsIcon,
     url: CASTING_LIST_URL
   }
@@ -73,9 +107,17 @@ const PageLayout = ({ children }) => {
           <Typography variant="h6" className={classes.title}>
             Moto ERP
           </Typography>
-          <Button color="inherit" variant="text">
-            Log out
-          </Button>
+          <div className={styles.buttons}>
+            <LangulageButton />
+            <Divider
+              orientation="vertical"
+              flexItem
+              classes={{ root: styles.navigationDivider }}
+            />
+            <Button color="inherit" variant="text">
+              Log out
+            </Button>
+          </div>
         </Toolbar>
       </AppBar>
       <div ref={containerRef}>

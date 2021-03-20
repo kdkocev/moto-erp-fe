@@ -9,6 +9,7 @@ import LinearProgress from '@material-ui/core/LinearProgress';
 
 import { curry, toPromise } from 'utils/common';
 import { setErrorsIfAny } from 'utils/forms';
+import { t } from 'utils/translate';
 
 import styles from './styles.module.css';
 
@@ -51,7 +52,9 @@ const CastingForm = ({ casting, onSubmit }) => {
   return (
     <>
       <Typography variant="h3" classes={{ root: styles.heading }}>
-        {casting ? 'Edit casting' : 'Add casting'}
+        {casting
+          ? t('Edit casting', 'Промени отливка')
+          : t('Add casting', 'Нова отливка')}
       </Typography>
 
       <form className={styles.form} onSubmit={formik.handleSubmit}>
@@ -85,7 +88,7 @@ const CastingForm = ({ casting, onSubmit }) => {
             fullWidth
             type="submit"
             disabled={submitting}>
-            Submit
+            {t('Submit', 'Изпрати')}
           </Button>
         </div>
       </form>

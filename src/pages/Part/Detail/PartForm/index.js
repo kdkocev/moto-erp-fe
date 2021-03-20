@@ -10,6 +10,7 @@ import LinearProgress from '@material-ui/core/LinearProgress';
 import SelectField from 'components/SelectField';
 import { curry, toPromise } from 'utils/common';
 import { setErrorsIfAny } from 'utils/forms';
+import { t } from 'utils/translate';
 
 import styles from './styles.module.css';
 
@@ -65,7 +66,7 @@ const PartForm = ({ part, castings = [], onSubmit }) => {
   return (
     <>
       <Typography variant="h3" classes={{ root: styles.heading }}>
-        {part ? 'Edit part' : 'Add part'}
+        {part ? t('Edit part', 'Промени детайл') : t('Add part', 'Нов детайл')}
       </Typography>
 
       <form className={styles.form} onSubmit={formik.handleSubmit}>
@@ -136,7 +137,7 @@ const PartForm = ({ part, castings = [], onSubmit }) => {
             fullWidth
             type="submit"
             disabled={submitting}>
-            Submit
+            {t('Submit', 'Изпрати')}
           </Button>
         </div>
       </form>
