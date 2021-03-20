@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import moment from 'moment';
-import { curry, replaceKeys } from 'utils/common';
+import { curry, replaceKeys, swapKeysAndValues } from 'utils/common';
 
 export const hiddenFields = ['id'];
 
@@ -11,7 +11,7 @@ const dateKeys = [
   'completed_at',
   'created_at'
 ];
-export const labelMappings = {
+const labelMappings = {
   number: 'Order No',
   amount: 'Amount',
   date_received: 'Received',
@@ -60,4 +60,16 @@ export const mapSortKeyToLabelMappings = (key) => {
     (key.startsWith('-') ? '-' : '') +
     _.get(labelMappings, _.dropWhile(key, (x) => x === '-').join(''), key)
   );
+};
+
+export const mapLabelMappingsToSortKey = (key) => {
+  const obj = {
+    ...labelMappings,
+    ..._.mapValues(
+      _.mapKeys(labelMappings, (v, k) => `-${k}`),
+      (x) => `-${x}`
+    )
+  };
+  const keys = swapKeysAndValues(obj);
+  return keys[key];
 };

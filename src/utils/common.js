@@ -72,3 +72,11 @@ export const swapKeysAndValues = (object) => {
   });
   return result;
 };
+
+/**
+ * Composes functions with airity = 1 to be called one after the other.
+ * The function that is passed first - will be called first.
+ * returns a cunftion that expects 1 argument to be passed to the first function to start the chain.
+ */
+export const compose = (...args) => (arg) =>
+  [arg, ...args].reduce((res, current) => current(res));

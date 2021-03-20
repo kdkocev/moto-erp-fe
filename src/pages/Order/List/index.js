@@ -1,5 +1,4 @@
-import React, { useState, useMemo, useCallback } from 'react';
-import _ from 'lodash';
+import React, { useMemo, useCallback } from 'react';
 
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
@@ -8,9 +7,10 @@ import AddButton from 'components/AddButton';
 import InformationTable from 'components/InformationTable';
 import { ORDER_DETAIL_URL, ORDER_ADD_NEW_URL } from 'config/urls';
 import { useLink } from 'utils/links';
-import { getIdObject, swapKeysAndValues } from 'utils/common';
+import { getIdObject, compose } from 'utils/common';
 import { useRefreshable } from 'utils/sdk';
 import { t } from 'utils/translate';
+import { useSorting } from 'utils/sorting';
 import { useOrderList, deleteOrder } from 'sdk/order';
 import { usePartList } from 'sdk/part';
 
@@ -18,8 +18,8 @@ import {
   prepareOrdersForTable,
   hiddenFields,
   replacePartIdsWithNumbers,
-  labelMappings,
-  mapSortKeyToLabelMappings
+  mapSortKeyToLabelMappings,
+  mapLabelMappingsToSortKey
 } from './utils';
 
 import styles from './styles.module.css';
@@ -29,15 +29,7 @@ const OrdersTable = ({ orders, onEdit, onDelete, sortBy, onSortBy }) => {
 
   const handleonSortBy = useCallback(
     (key) => {
-      const obj = {
-        ...labelMappings,
-        ..._.mapValues(
-          _.mapKeys(labelMappings, (v, k) => `-${k}`),
-          (x) => `-${x}`
-        )
-      };
-      const keys = swapKeysAndValues(obj);
-      onSortBy(keys[key]);
+      compose(mapLabelMappingsToSortKey, onSortBy)(key);
     },
     [onSortBy]
   );
@@ -56,18 +48,17 @@ const OrdersTable = ({ orders, onEdit, onDelete, sortBy, onSortBy }) => {
   );
 };
 
-const AddNewOrderButton = ({ onClick }) => (
-  <AddButton onClick={onClick}>{t('Add New Order', 'Нова поръчка')}</AddButton>
-);
+const AddNewOrderButton = () => {
+  const onClick = useLink(ORDER_ADD_NEW_URL);
+  return (
+    <AddButton onClick={onClick}>
+      {t('Add New Order', 'Нова поръчка')}
+    </AddButton>
+  );
+};
 
 const OrdersList = () => {
-  const [sortBy, setSortBy] = useState('');
-  const filters = useMemo(
-    () => ({
-      ordering: sortBy
-    }),
-    [sortBy]
-  );
+  const [filters, sortBy, setSortBy] = useSorting();
   const [orderList, refreshOrderList] = useRefreshable(useOrderList, filters);
   const partList = usePartList();
 
@@ -81,9 +72,6 @@ const OrdersList = () => {
     (object) => deleteOrder(object.id).then(refreshOrderList),
     [refreshOrderList]
   );
-  const onSortBy = setSortBy;
-
-  const handleAddButtonClick = useLink(ORDER_ADD_NEW_URL);
 
   return (
     <>
@@ -91,7 +79,7 @@ const OrdersList = () => {
         <div className={styles.header}>
           <Typography variant="h4">{t('Orders list', 'Поръчки')}</Typography>
           <div>
-            <AddNewOrderButton onClick={handleAddButtonClick} />
+            <AddNewOrderButton />
           </div>
         </div>
       </Paper>
@@ -102,10 +90,10 @@ const OrdersList = () => {
             onEdit={onItemEdit}
             onDelete={onItemDelete}
             sortBy={sortBy}
-            onSortBy={onSortBy}
+            onSortBy={setSortBy}
           />
           <div className={styles.addButton}>
-            <AddNewOrderButton onClick={handleAddButtonClick} />
+            <AddNewOrderButton />
           </div>
         </div>
       </Paper>
