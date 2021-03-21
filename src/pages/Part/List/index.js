@@ -7,22 +7,34 @@ import InformationTable from 'components/InformationTable';
 import AddButton from 'components/AddButton';
 import { PART_DETAIL_URL, PART_ADD_NEW_URL } from 'config/urls';
 import { useLink } from 'utils/links';
-import { getIdObject } from 'utils/common';
+import { getIdObject, compose } from 'utils/common';
 import { useRefreshable } from 'utils/sdk';
 import { t } from 'utils/translate';
+import { useSorting } from 'utils/sorting';
 import { usePartList, deletePart } from 'sdk/part';
 import { useCastingList } from 'sdk/casting';
 
 import {
   setPartsLabels,
   hiddenFields,
-  replaceCastingIdsWithNumbers
+  replaceCastingIdsWithNumbers,
+  mapSortKeyToLabelMappings,
+  mapLabelMappingsToSortKey
 } from './utils';
 
 import styles from './styles.module.css';
 
-const PartTable = ({ parts, onEdit, onDelete }) => {
+const PartTable = ({ parts, onEdit, onDelete, sortBy, onSortBy }) => {
   const items = useMemo(() => setPartsLabels(parts), [parts]);
+
+  const handleonSortBy = useCallback(
+    (key) => {
+      compose(mapLabelMappingsToSortKey, onSortBy)(key);
+    },
+    [onSortBy]
+  );
+
+  const sortByKey = useMemo(() => mapSortKeyToLabelMappings(sortBy), [sortBy]);
 
   return (
     <InformationTable
@@ -30,6 +42,8 @@ const PartTable = ({ parts, onEdit, onDelete }) => {
       onEdit={onEdit}
       onDelete={onDelete}
       hiddenKeys={hiddenFields}
+      sortBy={sortByKey}
+      onSortBy={handleonSortBy}
     />
   );
 };
@@ -39,7 +53,8 @@ const AddNewPartButton = ({ onClick }) => (
 );
 
 const PartList = () => {
-  const [partList, refreshPartList] = useRefreshable(usePartList);
+  const [filters, sortBy, setSortBy] = useSorting();
+  const [partList, refreshPartList] = useRefreshable(usePartList, filters);
   const castingList = useCastingList();
 
   const parts = useMemo(
@@ -70,6 +85,8 @@ const PartList = () => {
             parts={parts}
             onEdit={onItemEdit}
             onDelete={onItemDelete}
+            sortBy={sortBy}
+            onSortBy={setSortBy}
           />
           <div className={styles.addButton}>
             <AddNewPartButton onClick={handleAddButtonClick} />

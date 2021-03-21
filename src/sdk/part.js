@@ -11,7 +11,7 @@ const UPDATE_URL = (id) => OBJECT_API_URL(id);
 const DELETE_URL = (id) => OBJECT_API_URL(id);
 
 export const fetchPart = (id) => callUrl(get, GET_URL(id));
-export const fetchPartList = () => callUrl(get, LIST_URL);
+export const fetchPartList = (filters) => callUrl(get, LIST_URL, filters);
 export const createPart = (data) => callUrl(post, CREATE_URL, data);
 export const updatePart = (id, data) => callUrl(patch, UPDATE_URL(id), data);
 export const deletePart = (id) => callUrl(remove, DELETE_URL(id));
@@ -19,4 +19,4 @@ export const deletePart = (id) => callUrl(remove, DELETE_URL(id));
 // ---- Hooks ----
 
 export const usePart = (id) => useFetch(fetchPart, undefined, id);
-export const usePartList = (key) => useFetch(fetchPartList, [], key); // Key for useRefreshable
+export const usePartList = (filters) => useFetch(fetchPartList, [], filters); // Key for useRefreshable

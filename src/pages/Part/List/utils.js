@@ -1,10 +1,9 @@
 import _ from 'lodash';
-import { replaceKeys } from 'utils/common';
+import { replaceKeys, swapKeysAndValues } from 'utils/common';
 
 export const hiddenFields = ['id'];
 
 const labelMappings = {
-  id: 'ID',
   number: 'Number',
   price_total: 'Price Total',
   price_machining: 'Price Machining',
@@ -26,4 +25,23 @@ export const replaceCastingIdsWithNumbers = (partList, castingList) => {
     ...part,
     casting: castingIdToNumberObj[part.casting]
   }));
+};
+
+export const mapSortKeyToLabelMappings = (key) => {
+  return (
+    (key.startsWith('-') ? '-' : '') +
+    _.get(labelMappings, _.dropWhile(key, (x) => x === '-').join(''), key)
+  );
+};
+
+export const mapLabelMappingsToSortKey = (key) => {
+  const obj = {
+    ...labelMappings,
+    ..._.mapValues(
+      _.mapKeys(labelMappings, (v, k) => `-${k}`),
+      (x) => `-${x}`
+    )
+  };
+  const keys = swapKeysAndValues(obj);
+  return keys[key];
 };

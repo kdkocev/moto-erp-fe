@@ -7,17 +7,32 @@ import InformationTable from 'components/InformationTable';
 import AddButton from 'components/AddButton';
 import { CASTING_DETAIL_URL, CASTING_ADD_NEW_URL } from 'config/urls';
 import { useLink } from 'utils/links';
-import { getIdObject } from 'utils/common';
+import { getIdObject, compose } from 'utils/common';
 import { useRefreshable } from 'utils/sdk';
 import { t } from 'utils/translate';
+import { useSorting } from 'utils/sorting';
 import { useCastingList, deleteCasting } from 'sdk/casting';
 
-import { prepareCastingsForTable, hiddenFields } from './utils';
+import {
+  prepareCastingsForTable,
+  hiddenFields,
+  mapLabelMappingsToSortKey,
+  mapSortKeyToLabelMappings
+} from './utils';
 
 import styles from './styles.module.css';
 
-const CastingTable = ({ castings, onEdit, onDelete }) => {
+const CastingTable = ({ castings, onEdit, onDelete, sortBy, onSortBy }) => {
   const items = useMemo(() => prepareCastingsForTable(castings), [castings]);
+
+  const handleonSortBy = useCallback(
+    (key) => {
+      compose(mapLabelMappingsToSortKey, onSortBy)(key);
+    },
+    [onSortBy]
+  );
+
+  const sortByKey = useMemo(() => mapSortKeyToLabelMappings(sortBy), [sortBy]);
 
   return (
     <InformationTable
@@ -25,6 +40,8 @@ const CastingTable = ({ castings, onEdit, onDelete }) => {
       onEdit={onEdit}
       onDelete={onDelete}
       hiddenKeys={hiddenFields}
+      sortBy={sortByKey}
+      onSortBy={handleonSortBy}
     />
   );
 };
@@ -36,7 +53,11 @@ const AddNewCastingButton = ({ onClick }) => (
 );
 
 const CastingList = ({ history }) => {
-  const [castings, refreshCastingList] = useRefreshable(useCastingList);
+  const [filters, sortBy, setSortBy] = useSorting();
+  const [castings, refreshCastingList] = useRefreshable(
+    useCastingList,
+    filters
+  );
 
   const onItemEdit = useLink(CASTING_DETAIL_URL, getIdObject);
   const onItemDelete = (object) =>
@@ -62,6 +83,8 @@ const CastingList = ({ history }) => {
             castings={castings}
             onEdit={onItemEdit}
             onDelete={onItemDelete}
+            sortBy={sortBy}
+            onSortBy={setSortBy}
           />
           <div className={styles.addButton}>
             <AddNewCastingButton onClick={handleAddButtonClick} />
