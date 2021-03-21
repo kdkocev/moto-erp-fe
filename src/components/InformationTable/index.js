@@ -110,12 +110,16 @@ const InformationTable = ({
               })}
               <TableCell>
                 <Box textAlign="right">
-                  <IconButton onClick={() => onEdit(item)}>
-                    <EditIcon />
-                  </IconButton>
-                  <IconButton onClick={() => handleDelete(item)}>
-                    <DeleteForeverIcon />
-                  </IconButton>
+                  {onEdit && (
+                    <IconButton onClick={() => onEdit(item)}>
+                      <EditIcon />
+                    </IconButton>
+                  )}
+                  {onDelete && (
+                    <IconButton onClick={() => handleDelete(item)}>
+                      <DeleteForeverIcon />
+                    </IconButton>
+                  )}
                 </Box>
               </TableCell>
             </TableRow>

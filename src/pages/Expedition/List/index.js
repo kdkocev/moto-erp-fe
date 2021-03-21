@@ -3,6 +3,7 @@ import React, { useMemo, useCallback } from 'react';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 
+import { EXPEDITION_ADD_NEW_URL } from 'config/urls';
 import AddButton from 'components/AddButton';
 import InformationTable from 'components/InformationTable';
 import { useLink } from 'utils/links';
@@ -56,7 +57,7 @@ const ExpeditionsTable = ({
 };
 
 const AddNewExpeditionButton = () => {
-  const onClick = useLink('');
+  const onClick = useLink(EXPEDITION_ADD_NEW_URL);
   return (
     <AddButton onClick={onClick}>
       {t('Add New Expedition', 'Експедирай поръчка')}

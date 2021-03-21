@@ -15,3 +15,4 @@ export const CASTING_DETAIL_URL = '/casting/:id';
 export const CASTING_ADD_NEW_URL = '/castings/add';
 
 export const EXPEDITION_LIST_URL = '/expeditions';
+export const EXPEDITION_ADD_NEW_URL = '/expeditions/add';
