@@ -6,11 +6,11 @@ import * as yup from 'yup';
 
 import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
-import { DatePicker } from '@material-ui/pickers';
 import Button from '@material-ui/core/Button';
 import LinearProgress from '@material-ui/core/LinearProgress';
 
 import SelectField from 'components/SelectField';
+import DatePicker from 'components/DatePicker';
 import { curry, toPromise } from 'utils/common';
 import { setErrorsIfAny } from 'utils/forms';
 import { t } from 'utils/translate';
@@ -25,10 +25,10 @@ const emptyOrder = {
   number: '',
   part: '',
   amount: '',
-  date_received: moment(),
-  date_of_expedition: moment(),
-  date_of_delivery: moment(),
-  completed_at: moment(),
+  date_received: null,
+  date_of_expedition: null,
+  date_of_delivery: null,
+  completed_at: null,
   created_at: moment()
 };
 

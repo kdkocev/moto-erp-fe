@@ -17,7 +17,12 @@ import GroupWorkIcon from '@material-ui/icons/GroupWork';
 import SettingsApplicationsIcon from '@material-ui/icons/SettingsApplications';
 import LanguageIcon from '@material-ui/icons/Language';
 
-import { ORDER_LIST_URL, CASTING_LIST_URL, PART_LIST_URL } from 'config/urls';
+import {
+  ORDER_LIST_URL,
+  CASTING_LIST_URL,
+  PART_LIST_URL,
+  EXPEDITION_LIST_URL
+} from 'config/urls';
 import {
   getCurrentLanguage,
   LANGUAGES,
@@ -85,6 +90,12 @@ const menuItems = [
     label: t('Castings', 'Отливки'),
     Icon: SettingsApplicationsIcon,
     url: CASTING_LIST_URL
+  },
+  {
+    key: 'expeditions',
+    label: t('Expeditions', 'Експедиции'),
+    Icon: SettingsApplicationsIcon,
+    url: EXPEDITION_LIST_URL
   }
 ];
 

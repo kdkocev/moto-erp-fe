@@ -13,3 +13,5 @@ export const PART_ADD_NEW_URL = '/parts/add';
 export const CASTING_LIST_URL = '/castings';
 export const CASTING_DETAIL_URL = '/casting/:id';
 export const CASTING_ADD_NEW_URL = '/castings/add';
+
+export const EXPEDITION_LIST_URL = '/expeditions';

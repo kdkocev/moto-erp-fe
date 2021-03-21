@@ -14,6 +14,7 @@ import PartAdd from 'pages/Part/Add';
 import CastingList from 'pages/Casting/List';
 import CastingDetail from 'pages/Casting/Detail';
 import CastingAdd from 'pages/Casting/Add';
+import ExpeditionList from 'pages/Expedition/List';
 
 import {
   LOGIN_URL,
@@ -25,7 +26,8 @@ import {
   PART_ADD_NEW_URL,
   CASTING_LIST_URL,
   CASTING_DETAIL_URL,
-  CASTING_ADD_NEW_URL
+  CASTING_ADD_NEW_URL,
+  EXPEDITION_LIST_URL
 } from 'config/urls';
 
 const history = createBrowserHistory();
@@ -47,6 +49,8 @@ const Routes = () => {
           <Route exact path={PART_LIST_URL} component={PartList} />
           <Route exact path={PART_DETAIL_URL} component={PartDetail} />
           <Route exact path={PART_ADD_NEW_URL} component={PartAdd} />
+
+          <Route exact path={EXPEDITION_LIST_URL} component={ExpeditionList} />
         </PageLayout>
         <Route exact path={LOGIN_URL} component={Login} />
         <Route path="*">
