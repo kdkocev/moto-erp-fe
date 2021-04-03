@@ -3,16 +3,18 @@ import React, { useMemo, useCallback } from 'react';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 
-import { EXPEDITION_ADD_NEW_URL } from 'config/urls';
+import { EXPEDITION_ADD_NEW_URL, EXPEDITION_DETAIL_URL } from 'config/urls';
 import AddButton from 'components/AddButton';
 import InformationTable from 'components/InformationTable';
+import { getIdObject } from 'utils/common';
 import { useLink } from 'utils/links';
+import { useRefreshable } from 'utils/sdk';
 import { useSorting } from 'utils/sorting';
 import { compose } from 'utils/common';
 import { t } from 'utils/translate';
 
 import { useOrderList } from 'sdk/order';
-import { useExpeditionList } from 'sdk/expedition';
+import { useExpeditionList, deleteExpedition } from 'sdk/expedition';
 
 import {
   prepareExpeditionsForTable,
@@ -67,12 +69,21 @@ const AddNewExpeditionButton = () => {
 
 const ExpeditionList = () => {
   const [filters, sortBy, setSortBy] = useSorting();
-  const expeditionList = useExpeditionList(filters);
+  const [expeditionList, refreshExpeditionList] = useRefreshable(
+    useExpeditionList,
+    filters
+  );
   const orderList = useOrderList();
 
   const expeditions = useMemo(
     () => replaceOrderIdsWithNumbers(expeditionList, orderList),
     [expeditionList, orderList]
+  );
+
+  const onItemEdit = useLink(EXPEDITION_DETAIL_URL, getIdObject);
+  const onItemDelete = useCallback(
+    (object) => deleteExpedition(object.id).then(refreshExpeditionList),
+    [refreshExpeditionList]
   );
 
   return (
@@ -93,6 +104,8 @@ const ExpeditionList = () => {
             expeditions={expeditions}
             sortBy={sortBy}
             onSortBy={setSortBy}
+            onEdit={onItemEdit}
+            onDelete={onItemDelete}
           />
           <div className={styles.addButton}>
             <AddNewExpeditionButton />

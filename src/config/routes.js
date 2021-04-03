@@ -15,6 +15,7 @@ import CastingList from 'pages/Casting/List';
 import CastingDetail from 'pages/Casting/Detail';
 import CastingAdd from 'pages/Casting/Add';
 import ExpeditionList from 'pages/Expedition/List';
+import ExpeditionDetail from 'pages/Expedition/Detail';
 import ExpeditionAdd from 'pages/Expedition/Add';
 
 import {
@@ -29,6 +30,7 @@ import {
   CASTING_DETAIL_URL,
   CASTING_ADD_NEW_URL,
   EXPEDITION_LIST_URL,
+  EXPEDITION_DETAIL_URL,
   EXPEDITION_ADD_NEW_URL
 } from 'config/urls';
 
@@ -50,6 +52,11 @@ const Routes = () => {
           <Route exact path={PART_DETAIL_URL} component={PartDetail} />
           <Route exact path={PART_ADD_NEW_URL} component={PartAdd} />
           <Route exact path={EXPEDITION_LIST_URL} component={ExpeditionList} />
+          <Route
+            exact
+            path={EXPEDITION_DETAIL_URL}
+            component={ExpeditionDetail}
+          />
           <Route
             exact
             path={EXPEDITION_ADD_NEW_URL}
