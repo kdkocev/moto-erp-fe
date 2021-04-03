@@ -17,3 +17,11 @@ export const CASTING_ADD_NEW_URL = '/castings/add';
 export const EXPEDITION_LIST_URL = '/expeditions';
 export const EXPEDITION_DETAIL_URL = '/expedition/:id';
 export const EXPEDITION_ADD_NEW_URL = '/expeditions/add';
+
+export const STORED_CASTINGS_LIST_URL = '/stored-castings';
+export const STORED_CASTINGS_DETAIL_URL = '/stored-casting/:id';
+export const STORED_CASTINGS_ADD_NEW_URL = '/stored-castings/add';
+
+export const MACHINED_PARTS_LIST_URL = '/machined-parts';
+export const MACHINED_PARTS_DETAIL_URL = '/machined-part/:id';
+export const MACHINED_PARTS_ADD_NEW_URL = '/machined-parts/add';

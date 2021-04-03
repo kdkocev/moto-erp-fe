@@ -14,6 +14,7 @@ const dateKeys = [
 const labelMappings = {
   number: 'Order No',
   amount: 'Amount',
+  priority: 'Priority',
   date_received: 'Received',
   date_of_expedition: 'Expedition',
   date_of_delivery: 'Delivery',
@@ -21,6 +22,19 @@ const labelMappings = {
   created_at: 'Created at',
   part: 'Part'
 };
+
+export const PRIORITY_OPTIONS = [
+  {
+    key: 0,
+    value: 0,
+    label: 'Low'
+  },
+  {
+    key: 1,
+    value: 1,
+    label: 'High'
+  }
+];
 
 const formatDate = (str) => {
   return moment(str, 'YYYY-MM-DD').format('DD MMM YYYY');
@@ -41,8 +55,20 @@ const replaceKeysWithLabelsInOrder = (order) => ({
   id: order.id
 });
 
+const replacePriorityNumberWithLabel = (order) => ({
+  ...order,
+  priority: _.get(
+    PRIORITY_OPTIONS.find((option) => option.value === order.priority),
+    'label',
+    '-'
+  )
+});
+
 export const prepareOrdersForTable = (orders) =>
-  orders.map(formatDatesInObject(dateKeys)).map(replaceKeysWithLabelsInOrder);
+  orders
+    .map(formatDatesInObject(dateKeys))
+    .map(replacePriorityNumberWithLabel)
+    .map(replaceKeysWithLabelsInOrder);
 
 export const replacePartIdsWithNumbers = (orderList, partList) => {
   const partListIds = partList.map((part) => part.id);

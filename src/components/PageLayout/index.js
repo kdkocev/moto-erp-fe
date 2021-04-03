@@ -12,8 +12,10 @@ import ListItem from '@material-ui/core/ListItem';
 import Divider from '@material-ui/core/Divider';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
+import HomeIcon from '@material-ui/icons/Home';
 import AssignmentIcon from '@material-ui/icons/Assignment';
 import GroupWorkIcon from '@material-ui/icons/GroupWork';
+import LocalShippingIcon from '@material-ui/icons/LocalShipping';
 import SettingsApplicationsIcon from '@material-ui/icons/SettingsApplications';
 import LanguageIcon from '@material-ui/icons/Language';
 
@@ -21,7 +23,9 @@ import {
   ORDER_LIST_URL,
   CASTING_LIST_URL,
   PART_LIST_URL,
-  EXPEDITION_LIST_URL
+  EXPEDITION_LIST_URL,
+  STORED_CASTINGS_LIST_URL,
+  MACHINED_PARTS_LIST_URL
 } from 'config/urls';
 import {
   getCurrentLanguage,
@@ -74,10 +78,22 @@ const useStyles = makeStyles((theme) => ({
 }));
 const menuItems = [
   {
+    key: 'home',
+    label: t('Home', 'Начало'),
+    Icon: HomeIcon,
+    url: '/'
+  },
+  {
     key: 'orders',
     label: t('Orders', 'Поръчки'),
     Icon: AssignmentIcon,
     url: ORDER_LIST_URL
+  },
+  {
+    key: 'expeditions',
+    label: t('Expeditions', 'Експедиции'),
+    Icon: LocalShippingIcon,
+    url: EXPEDITION_LIST_URL
   },
   {
     key: 'parts',
@@ -86,16 +102,22 @@ const menuItems = [
     url: PART_LIST_URL
   },
   {
+    key: 'machinedParts',
+    label: t('Machined parts', 'Склад готова продукция'),
+    Icon: GroupWorkIcon,
+    url: MACHINED_PARTS_LIST_URL
+  },
+  {
     key: 'castings',
     label: t('Castings', 'Отливки'),
     Icon: SettingsApplicationsIcon,
     url: CASTING_LIST_URL
   },
   {
-    key: 'expeditions',
-    label: t('Expeditions', 'Експедиции'),
+    key: 'storedCastings',
+    label: t('Stored Castings', 'Склад отливки'),
     Icon: SettingsApplicationsIcon,
-    url: EXPEDITION_LIST_URL
+    url: STORED_CASTINGS_LIST_URL
   }
 ];
 

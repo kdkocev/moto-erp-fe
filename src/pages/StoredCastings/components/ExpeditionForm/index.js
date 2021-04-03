@@ -1,5 +1,4 @@
-import React, { useState, useCallback, useMemo } from 'react';
-import _ from 'lodash';
+import React, { useMemo, useState, useCallback } from 'react';
 import moment from 'moment';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
@@ -14,41 +13,30 @@ import DatePicker from 'components/DatePicker';
 import { curry, toPromise } from 'utils/common';
 import { setErrorsIfAny } from 'utils/forms';
 import { t } from 'utils/translate';
-import { PRIORITY_OPTIONS } from 'pages/Order/List/utils';
 
 import styles from './styles.module.css';
 
 const DATE_FORMAT = 'DD/MM/YYYY';
 const validationSchema = yup.object({});
 
-const emptyOrder = {
+const emptyObject = {
   id: '',
-  number: '',
-  part: '',
+  order: '',
   amount: '',
-  priority: 0,
-  date_received: null,
   date_of_expedition: null,
-  date_of_delivery: null,
-  completed_at: null,
   created_at: moment()
 };
 
-const getInitialValues = (order) => {
-  if (order) {
-    const addition = {};
-    if (_.isNull(order.completed_at)) {
-      // If completed_at is returned as null from the API, we have to make it ''
-      addition.completed_at = '';
-    }
-    return { ...order, ...addition };
+const getInitialValues = (expedition) => {
+  if (expedition) {
+    return expedition;
   }
-  return emptyOrder;
+  return emptyObject;
 };
 
-const OrderForm = ({ order, parts = [], onSubmit }) => {
+const ExpeditionForm = ({ expedition, orders = [], onSubmit }) => {
   const [submitting, setSubmitting] = useState(false);
-  const initialValues = getInitialValues(order);
+  const initialValues = getInitialValues(expedition);
 
   const handleSubmit = useCallback(
     (data, formikBag) => {
@@ -62,14 +50,14 @@ const OrderForm = ({ order, parts = [], onSubmit }) => {
     [onSubmit]
   );
 
-  const partOptions = useMemo(
+  const orderOptions = useMemo(
     () =>
-      parts.map((part) => ({
-        key: part.id,
-        value: part.id,
-        label: part.number
+      orders.map((order) => ({
+        key: order.id,
+        value: order.id,
+        label: order.number
       })),
-    [parts]
+    [orders]
   );
 
   const formik = useFormik({
@@ -81,9 +69,9 @@ const OrderForm = ({ order, parts = [], onSubmit }) => {
   return (
     <>
       <Typography variant="h3" classes={{ root: styles.heading }}>
-        {order
-          ? t('Edit order', 'Промени поръчка')
-          : t('Add order', 'Нова поръчка')}
+        {expedition
+          ? t('Edit expedition', 'Промени експедиция')
+          : t('Add expedition', 'Нова експедиция')}
       </Typography>
 
       <form className={styles.form} onSubmit={formik.handleSubmit}>
@@ -98,26 +86,16 @@ const OrderForm = ({ order, parts = [], onSubmit }) => {
           error={formik.touched.id && Boolean(formik.errors.id)}
           helperText={formik.touched.id && formik.errors.id}
         />
-        <TextField
-          fullWidth
-          id="number"
-          name="number"
-          label="Order number"
-          value={formik.values.number}
-          onChange={formik.handleChange}
-          error={formik.touched.number && Boolean(formik.errors.number)}
-          helperText={formik.touched.number && formik.errors.number}
-        />
         <SelectField
           fullWidth
-          id="part"
-          name="part"
-          label="Part"
-          value={formik.values.part}
+          id="order"
+          name="order"
+          label="Order"
+          value={formik.values.order}
           onChange={formik.handleChange}
-          error={formik.touched.part && Boolean(formik.errors.part)}
-          helperText={formik.touched.part && formik.errors.part}
-          options={partOptions}
+          error={formik.touched.order && Boolean(formik.errors.order)}
+          helperText={formik.touched.order && formik.errors.order}
+          options={orderOptions}
         />
         <TextField
           fullWidth
@@ -128,32 +106,6 @@ const OrderForm = ({ order, parts = [], onSubmit }) => {
           onChange={formik.handleChange}
           error={formik.touched.amount && Boolean(formik.errors.amount)}
           helperText={formik.touched.amount && formik.errors.amount}
-        />
-        <SelectField
-          fullWidth
-          id="priority"
-          name="priority"
-          label="Priority"
-          value={formik.values.priority}
-          onChange={formik.handleChange}
-          error={formik.touched.priority && Boolean(formik.errors.priority)}
-          helperText={formik.touched.priority && formik.errors.priority}
-          options={PRIORITY_OPTIONS}
-        />
-        <DatePicker
-          fullWidth
-          format={DATE_FORMAT}
-          id="date_received"
-          name="date_received"
-          label="Date received"
-          value={formik.values.date_received}
-          onChange={(date) => formik.setFieldValue('date_received', date)}
-          error={
-            formik.touched.date_received && Boolean(formik.errors.date_received)
-          }
-          helperText={
-            formik.touched.date_received && formik.errors.date_received
-          }
         />
         <DatePicker
           fullWidth
@@ -175,35 +127,6 @@ const OrderForm = ({ order, parts = [], onSubmit }) => {
         <DatePicker
           fullWidth
           format={DATE_FORMAT}
-          id="date_of_delivery"
-          name="date_of_delivery"
-          label="Date of delivery"
-          value={formik.values.date_of_delivery}
-          onChange={(date) => formik.setFieldValue('date_of_delivery', date)}
-          error={
-            formik.touched.date_of_delivery &&
-            Boolean(formik.errors.date_of_delivery)
-          }
-          helperText={
-            formik.touched.date_of_delivery && formik.errors.date_of_delivery
-          }
-        />
-        <DatePicker
-          fullWidth
-          format={DATE_FORMAT}
-          id="completed_at"
-          name="completed_at"
-          label="Completed at"
-          value={formik.values.completed_at}
-          onChange={(date) => formik.setFieldValue('completed_at', date)}
-          error={
-            formik.touched.completed_at && Boolean(formik.errors.completed_at)
-          }
-          helperText={formik.touched.completed_at && formik.errors.completed_at}
-        />
-        <DatePicker
-          fullWidth
-          format={DATE_FORMAT}
           id="created_at"
           name="created_at"
           label="Created at"
@@ -212,7 +135,6 @@ const OrderForm = ({ order, parts = [], onSubmit }) => {
           error={formik.touched.created_at && Boolean(formik.errors.created_at)}
           helperText={formik.touched.created_at && formik.errors.created_at}
         />
-
         <div className={styles.submitButtonContainer}>
           {submitting && <LinearProgress color="primary" />}
           <Button
@@ -228,4 +150,5 @@ const OrderForm = ({ order, parts = [], onSubmit }) => {
     </>
   );
 };
-export default OrderForm;
+
+export default ExpeditionForm;

@@ -17,6 +17,12 @@ import CastingAdd from 'pages/Casting/Add';
 import ExpeditionList from 'pages/Expedition/List';
 import ExpeditionDetail from 'pages/Expedition/Detail';
 import ExpeditionAdd from 'pages/Expedition/Add';
+import StoredCastingsList from 'pages/StoredCastings/List';
+import StoredCastingsDetail from 'pages/StoredCastings/Detail';
+import StoredCastingsAdd from 'pages/StoredCastings/Add';
+import MachinedPartsList from 'pages/MachinedParts/List';
+import MachinedPartsDetail from 'pages/MachinedParts/Detail';
+import MachinedPartsAdd from 'pages/MachinedParts/Add';
 
 import {
   LOGIN_URL,
@@ -31,7 +37,13 @@ import {
   CASTING_ADD_NEW_URL,
   EXPEDITION_LIST_URL,
   EXPEDITION_DETAIL_URL,
-  EXPEDITION_ADD_NEW_URL
+  EXPEDITION_ADD_NEW_URL,
+  STORED_CASTINGS_LIST_URL,
+  STORED_CASTINGS_DETAIL_URL,
+  STORED_CASTINGS_ADD_NEW_URL,
+  MACHINED_PARTS_LIST_URL,
+  MACHINED_PARTS_DETAIL_URL,
+  MACHINED_PARTS_ADD_NEW_URL
 } from 'config/urls';
 
 const history = createBrowserHistory();
@@ -61,6 +73,36 @@ const Routes = () => {
             exact
             path={EXPEDITION_ADD_NEW_URL}
             component={ExpeditionAdd}
+          />
+          <Route
+            exact
+            path={STORED_CASTINGS_LIST_URL}
+            component={StoredCastingsList}
+          />
+          <Route
+            exact
+            path={STORED_CASTINGS_DETAIL_URL}
+            component={StoredCastingsDetail}
+          />
+          <Route
+            exact
+            path={STORED_CASTINGS_ADD_NEW_URL}
+            component={StoredCastingsAdd}
+          />
+          <Route
+            exact
+            path={MACHINED_PARTS_LIST_URL}
+            component={MachinedPartsList}
+          />
+          <Route
+            exact
+            path={MACHINED_PARTS_DETAIL_URL}
+            component={MachinedPartsDetail}
+          />
+          <Route
+            exact
+            path={MACHINED_PARTS_ADD_NEW_URL}
+            component={MachinedPartsAdd}
           />
         </PageLayout>
         <Route exact path={LOGIN_URL} component={Login} />
